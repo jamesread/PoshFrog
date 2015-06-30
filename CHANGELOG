@@ -1,0 +1,36 @@
+2.0.2
+
++ /login.php: Changed references from $auth to $user.
++ /logout.php: Cleanup for use with the new api.
++ /includes/common.php: Renamed $auth to $user.
++ /includes/common.php: Renamed pFrogAuth to pFrogUser
++ /widgets/header.php: References to "tycoonism" removed and replaced with "pFrog"
++ /widgets/header.php: General code cleanup.
++ /includes/common.php: Created the class pFrogAuth which extends PEAR Auth.
+  It doesn't really do a whole lot apart from alias PEAR Auth functions that
+  have studpid names.
++ /login.php: General code cleanup/compatabilty with PEAR Auth
++ /widgets/footer.php: Removed the nasty debug statements (# queries used, etc)
++ /widgets/footer.php: Changed the old constant VERISON to $core->Version
++ /widgets/footer.php: Removed the call to count_queries which no longer exists.
++ /includes/functions.php: Removed the message() function, for preference of
+  the pear error architecture.
++ /includes/functions.php: Put 's around BOX_ defines
++ /includes/functions.php: Removed the redirect function, for preference of
+  $core->redirect();
++ /includes/functions.php: Serveral changes.
++ Deleted /includes/sql.php (replaced with new includes/common.php)
++ Deleted /includes/session.php (replaced with new includes/common.php)
+
+2.0.1
+
++ The project is now GPLv2. The license can be found in the COPYING file.
++ All source code files should now include the GPLv2 header.
++ Created VERSION file, which will contains the current verison of pFrog.
++ Created this CHANGELOG file.
++ Created the INSTALL file.
++ Created the README file.
+
+2.0.0
+
++ Started cleaning up project after a year of neglect!
