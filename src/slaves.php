@@ -25,7 +25,7 @@ require_once ("includes/common.php");
 $title = "slaves";
 require_once ("includes/widgets/header.php");
 
-$sql = "SELECT * FROM slaves WHERE `user` = '" . Session::getUser()->getUsername() . "'";
+$sql = "SELECT * FROM slaves WHERE `user` = '" . \libAllure\Session::getUser()->getUsername() . "'";
 $result = $db->query($sql);
 
 $slaves = $result->numRows();

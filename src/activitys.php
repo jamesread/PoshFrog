@@ -25,7 +25,7 @@ require_once ("includes/common.php");
 $title = "slaves";
 require_once ("includes/widgets/header.php");
 
-$sql = "SELECT * FROM activities";
+$sql = "SELECT * FROM activitys";
 $result = $db->query($sql);
 
 startBox("Activitys", BOX_GREEN);

@@ -23,6 +23,8 @@
 
 require_once ("includes/common.php");
 
+use \libAllure\DatabaseFactory;
+
 ?>
 
 <head>
@@ -33,19 +35,20 @@ require_once ("includes/common.php");
 <body class = "noBgImage">
 <?php
 
-$activity = $HTTP_GET_VARS['activity'];
+$activity = $_GET['activity'];
 
-$result  = db_query ("SELECT * FROM tycoonism_activitys WHERE name = '" . $activity . "' LIMIT 1");
+$stmt = DatabaseFactory::getInstance()->prepare("SELECT * FROM activitys WHERE name = '" . $activity . "' LIMIT 1");
+$stmt->execute();
 
-while ($row = mysql_fetch_array($result)) {
+foreach ($stmt->fetchAll() as $row) {
 	echo "<strong>";
 	echo $row['name'];
 	echo "</strong><hr>"; 
 
-	if (isset($HTTP_GET_VARS['action'])) {
+	if (isset($_GET['action'])) {
 
-		$sql = "UPDATE `tycoonism_users` SET `gold` = (`gold` + " . $row['gold'] . "), `usedturns` = (`usedturns` + " . $row['turns'] . ") WHERE `username` = '" . $userdata['username'] . "' LIMIT 1";
-		$result2 = db_query ($sql);
+		$sql = "UPDATE `users` SET `gold` = (`gold` + " . $row['gold'] . "), `usedturns` = (`usedturns` + " . $row['turns'] . ") WHERE `username` = '" . $userdata['username'] . "' LIMIT 1";
+		$result2 = DatabaseFactory::getInstance()->prepare($sql);
 
 		if ($result2) {
 			echo "Thanks for doing the " . $row['name'] . ".";

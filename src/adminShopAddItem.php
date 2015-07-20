@@ -23,6 +23,8 @@
 
 require_once("includes/common.php");
 
+use \libAllure\DatabaseFactory;
+
 if (isset($_GET['submit'])) {
 	if (!is_numeric($_GET['gold'])) {
 		$title = "Add shop item";
@@ -37,18 +39,15 @@ if (isset($_GET['submit'])) {
 	}
 
 	if ($_GET['type'] == "SLAVE") {
-		$sql = "INSERT INTO `tycoonism_slaves` (`name`, `gold` ) VALUES ('" . $_GET['name'] . "', '" . $_GET['gold'] . "')";
+		$sql = "INSERT INTO `slaves` (`name`, `gold` ) VALUES ('" . $_GET['name'] . "', '" . $_GET['gold'] . "')";
 	} else {
-		$sql = "INSERT INTO `tycoonism_shop` (`type`, `name`, `gold`, `turns`, `description`) VALUES ('" . $_GET['type'] . "', '" . $_GET['name'] . "', '" . $_GET['gold'] . "', '" . $_GET['turns'] . "', '" . $_GET['type'] . "' )"; 	
+		$sql = "INSERT INTO `shop` (`type`, `name`, `gold`, `turns`, `description`) VALUES ('" . $_GET['type'] . "', '" . $_GET['name'] . "', '" . $_GET['gold'] . "', '" . $_GET['turns'] . "', '" . $_GET['type'] . "' )"; 	
 	} 
 
-	$result = mysql_query($sql);
+	$stmt = DatabaseFactory::getInstance()->prepare($sql);
+	$stmt->execute();
 
-	if (!mysql_error()) {
-		redirect("Item added successfully.", "admin.php");
-	} else {
-		message(TYPE_SQL_ERROR, mysql_error());
-	}
+	$core->redirect('admin.php', "Item added successfully.");
 }
 
 $title = "Add shop item";

@@ -27,13 +27,14 @@ require_once ("includes/widgets/header.php");
 
 use \libAllure\Session;
 
+
 if (Session::isLoggedIn()) {
 	startBox("Hello again!", BOX_GREEN);
 	echo "Welcome back, " . Session::getUser()->getUsername() .".";
 	stopBox(BOX_GREEN);
 
 
-	$sql = "SELECT * FROM `hints` LIMIT 1 ";
+	$sql = "SELECT * FROM `hints` ORDER BY rand() LIMIT 1 ";
 	$result = $db->query($sql);
 	$hint = $result->fetchRow();
 

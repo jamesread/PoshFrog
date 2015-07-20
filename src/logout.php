@@ -23,7 +23,10 @@
 
 require_once 'includes/common.php';
 
-Session::logout();
+if (\libAllure\Session::isLoggedIn()) {
+	\libAllure\Session::logout();
+}
+
 $core->redirect('index.php', 'You are now logged out.');
 
 require_once 'includes/widgets/footer.php';

@@ -35,22 +35,14 @@ popup ("<li>Slaves</li>", "advisors.php?advisor=slaves");
 echo "</ul>";
 
 stopBox(BOX_GREEN);
-startBox("Staff", BOX_GREEN);
-
-echo "<ul>";
-popup ("<li>Chauffeur</li>", "staff.php?staff=chauffer");
-popup ("<li>Golf Coach</li>", "staff.php?staff=Golf Coach");
-echo "</ul>";
-
-stopBox(BOX_GREEN);
 startBox("Other Players...", BOX_GREEN);
 
-$sql = "SELECT * FROM users LIMIT 10";
+$sql = "SELECT * FROM users";
 $result = $db->query($sql);
 
 echo "<ul>";
 while ($row = $result->fetchRow()) {
-	echo "<li><a href = viewuser.php?user=" . $row['username'] . ">" . $row['username'] . "</a></li>";
+	echo "<li><a href = viewuser.php?user=" . $row['id'] . ">" . $row['username'] . "</a></li>";
 }
 echo "</ul>";
 

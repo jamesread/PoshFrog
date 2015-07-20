@@ -70,9 +70,6 @@ if (mysql_error() || $result->numRows() == 0) {
 
 stopBox(BOX_GREEN);
 
-startBox("Create a new clan.", BOX_BLUE);
-stopBox(BOX_BLUE);
-
 require_once ("includes/widgets/footer.php");
 
 ?>

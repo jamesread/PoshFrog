@@ -22,16 +22,7 @@
 *******************************************************************************/
 
 require_once ("includes/common.php");
-
-?>
-
-<head>
-<link rel = stylesheet href = includes/widgets/style.css>
-<title><?php echo $_GET['advisor']; ?> Advisor</title>
-</head>
-
-<body class = "noBgImage">
-<?php
+require_once 'includes/widgets/header.minimal.php';
 
 $advisor = $_GET['advisor'];
 
@@ -51,8 +42,7 @@ case 'slaves':
 	break;
 
 case 'business':
-
-	$result = $db->query("SELECT * FROM inventory WHERE user = '" . $_SESSION['username'] . "' AND type = 'BUSINESS'");
+	$result = $db->query("SELECT * FROM inventory WHERE owner = '" . $_SESSION['username'] . "' AND type = 'BUSINESS'");
 
 	if ($result->numRows() <= 0) {
 		echo "You've no businesses! Go to the shop, and buy some to start making money!";
@@ -66,7 +56,7 @@ case 'business':
 
 case 'financial':
 
-	if (Session::getUser()->getData('gold') <= 0) {
+	if (\libAllure\Session::getUser()->getData('gold') <= 0) {
 		echo "We are in debt! Try raising some more cash.";
 		echo "<br /><br /><strong>Overall</strong>: Bad";
 	} else {
@@ -78,7 +68,7 @@ case 'financial':
 
 case 'rankings':
 	$turns = get_turns( $_SESSION['username']);
-	$rank = (intval(($turns['total_turns'] * $userdata['gold']) / 10000));
+	$rank = (intval(($turns['total_turns'] * $user->getData('gold')) / 10000));
 
 	if ($rank <= 20) {
 		echo "You're rank is only <strong>" . $rank . "</strong>, you aught to try and improve this... Try making more money.";

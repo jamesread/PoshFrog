@@ -1,5 +1,7 @@
 <?php
 
+use \libAllure\DatabaseFactory;
+
 class Game {
 	var $settings = array();
 
@@ -8,28 +10,22 @@ class Game {
 	}
 
 	public function getSetting($key) {
-		if (!empty($this->settings)) {
-			if (!isset($this->settings[$key])) {
-				global $core;
-				Core::raiseError('Tried to access game setting "' . $key . '", which does not exist.');
-			}
+		if (empty($this->settings)) {
+			$sql = 'SELECT * FROM `settings`';
+			$stmt = DatabaseFactory::getInstance()->prepare($sql);
+			$stmt->execute();
 
+			foreach($stmt->fetchAll() as $setting) {
+				$this->settings[$setting['key']] = $setting['value'];	
+			}
+		}
+
+		if (isset($this->settings[$key])) {
 			return $this->settings[$key];
 		} else {
-			global $db;
-
-			$sql = 'SELECT * FROM `pfrog_settings`';
-			$result = $db->query($sql);
-
-			foreach ($result->fetchAll() as $setting) {
-				$this->settings[$setting['key']] = $setting['value'];
-			}
-
-			return $this->getSetting($key);
+			throw new Exception('Tried to access game setting "' . $key . '", which does not exist.');
 		}
 	}
 }
-
-$game = new Game();
 
 ?>

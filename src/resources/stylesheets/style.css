@@ -40,8 +40,13 @@ body {
 	background-image: url('../splashes/1.jpg');
 	background-position: bottom right;
 	background-repeat: no-repeat;
-	width: 600px;
+	width: 80%;
 	margin: auto;
+}
+
+body.minimal {
+	width: auto;
+	padding: 1em;
 }
 
 div.boxContent {
@@ -61,6 +66,32 @@ table.normal {
 div.red-box {
 	border: 1px solid red;
 	margin: 6px;
+}
+
+ul.mainmenu {
+	padding: 0;
+	margin: 0;
+	display: inline-block;
+	margin-right: 2em;
+}
+
+ul.mainmenu h3 {
+	padding: 0;
+	margin: 0;
+}
+
+ul.mainmenu li {
+	display: inline-block;
+	margin: 2px;
+}
+
+.status {
+	text-align: right;
+	margin-top: 0;
+}
+
+.metric {
+	margin-right: 1em;
 }
 
 h2.red-box {
@@ -139,10 +170,6 @@ fieldset {
 	border: 0;
 	padding: 6px;
 } 
-
-fieldset * {
-	display: inline-block;
-}
 
 legend {
 	color: #ffffff;
@@ -235,3 +262,5 @@ p.formValidationError {
 	color: red;
 	padding: .2em;
 }
+
+

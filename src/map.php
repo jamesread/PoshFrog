@@ -39,7 +39,7 @@ if (!isset($_GET['quadrent'])) {
 	$quadrent = $_GET['quadrent'];
 }
 
-$sql = "SELECT `tileset`, `traversable` FROM `map` WHERE `quadrent` = '" . $quadrent . "' LIMIT 1";
+$sql = "SELECT `tileset`, `traversable`, row, col FROM `map` WHERE `quadrent` = '" . $quadrent . "' LIMIT 1";
 $result = $db->query($sql);
 
 if ($result->numRows() == 0) {
@@ -49,16 +49,16 @@ if ($result->numRows() == 0) {
 function getCell($row, $column) {
 	global $cells;
 
-	return array(
-		'traversable' => true,
-		'tileset' => 'foo.jpg',
-	);
-
 	foreach ($cells as $cell) {
-		if ($cell['row'] == $row && $cell['column'] == $column) {
+		if ($cell['row'] == $row && $cell['col'] == $column) {
 			return $cell;
 		}
 	}
+
+	return array(
+		'traversable' => true,
+		'tileset' => 'tree.jpg',
+	);
 
 	throw new Exception('Cell not found: ' . $row . ':' . $column . ' in ' . print_r($cells, true));
 }
@@ -95,18 +95,18 @@ while ($row_loop <= 4 && $column_loop <= 4) {
 	}
 
 	if ($result->numRows() == 0) {
-		if ($user->getData('userlevel') >= LEVEL_ADMIN) {
+		if (inAdminMode()) {
 			popup ("no map data", "admin_modify_tileset.php?quadrent=$quadrent&row=$row_loop&column=$column_loop");
 		} else {
 			popup ("no map data", "help.php?topic=no_map_data" );
 		}
 	} else {
-		if ($row_result['traversable'] == 'yes' && Session::hasPriv('something')) {
+		if ($row_result['traversable'] == 'yes' && \libAllure\Session::hasPriv('something')) {
 			echo "<a href = map.php?quadrent=$quadrent&row=$row_loop&column=$column_loop>";
 		}
 
 		if  (substr($row_result['tileset'], -3, 3 ) == "jpg") {
-			echo "<img class = null src = 'tilesets/" . $row_result['tileset'] . "' / >";
+			echo "<img class = null src = 'resources/images/tilesets/" . $row_result['tileset'] . "' / >";
 		} else {
 			echo $row_result['tileset'];
 		}
@@ -138,10 +138,9 @@ echo "</table></fieldset></div>";
 
 $quadrent = $HTTP_GET_VARS['quadrent']; $row = $HTTP_GET_VARS['row']; $column = $HTTP_GET_VARS['column'];
 
-if (1) {
+if (inAdminMode()) {
 	echo "<div style = 'float:top;'><fieldset>";
 	echo "<legend>admin mode</legend>";
-	echo "<strong>fixme</strong> - everyone can see this! <br /><br />";
 	popup ("modify", "admin_modify_tileset.php?quadrent=$quadrent&row=$row&column=$column");
 	echo " | ";
 	popup ("create quadrent", "admin_create_quadrent.php");

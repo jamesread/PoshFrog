@@ -42,7 +42,7 @@ $sql = 'SELECT * FROM `users` WHERE `id` = "' . $_REQUEST['user']. '" LIMIT 1';
 $result = $db->query($sql);
 
 if ($result->numRows() == 0) {
-	throw new Exception('Cant find "' . $_REQUEST['user'] . '" in the database.');
+	$tpl->error("User not found.");
 }
 
 while ($row = $result->fetchRow()) {

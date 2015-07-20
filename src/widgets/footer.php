@@ -28,6 +28,8 @@
 <div id = "footer">
 <?php
 
+global $core;
+
 popup("Powerd by pFrog. ", "help.php?topic=pFrog" ); echo "Version <strong>" . $core->Version . "</strong>. <br />";
 
 ?>
@@ -36,3 +38,4 @@ popup("Powerd by pFrog. ", "help.php?topic=pFrog" ); echo "Version <strong>" . $
 </body>
 
 </html>
+<?php exit; ?>

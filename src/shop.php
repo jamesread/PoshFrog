@@ -46,11 +46,12 @@ if (isset($mode)) {
 if ($display['business']) {
 	startBox("Business", BOX_GREEN);
 
-	$sql = 'SELECT * FROM `pfrog_shop` WHERE `type` = "BUSINESS"';
-	$result = $db->query($sql);
+	$sql = 'SELECT * FROM `shop` WHERE `type` = "BUSINESS"';
+	$stmt = DatabaseFactory::getInstance()->prepare($sql);
+	$stmt->execute();
 
 	echo "<ul>\n";
-	if ($result->numRows() == 0) { 
+	if ($stmt->numRows() == 0) { 
 		echo "\t<li>Sorry, no bussinesses are avalible on the market.</li>\n";
 	} else {
 		while ($row = mysql_fetch_array($result)) {

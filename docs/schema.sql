@@ -167,5 +167,7 @@ CREATE TABLE `users` (
   `bankgold` int(11) NOT NULL default '0',
   `map_location` varchar(255) NOT NULL default '',
   `clan` varchar(255) NOT NULL default '',
+  `registered` datetime NOT NULL,
+  `email` varchar(255) NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=5 ;

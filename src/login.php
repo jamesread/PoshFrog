@@ -45,13 +45,13 @@ if ($f->validate()) {
 		//Session::isLoggedIn();
 		Session::checkCredentials($username, $password);
 
+		require_once 'includes/widgets/header.minimal.php';
+
 		$core->redirect('index.php', 'Thanks for logging in.');
 	} catch (UserNotFoundException $e) {
 		$f->setElementError('username', 'User not found');
 	} catch (IncorrectPasswordException $e) {
 		$f->setElementError('password', 'Incorrect password.');
-	} catch (Exception $e) {
-		$f->setGeneralError('Cannot login due to system error (' . get_class($e) . '): ' . $e->getMessage());
 	}
 }
 

@@ -26,25 +26,17 @@ require_once 'includes/common.php';
 use \libAllure\Session;
 
 if (!isset($title)) {
-	$core->error("Title not set for this page.");
+	$title = 'Untitled page';
 }
 
-echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n"; ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
-<head>
-<title>pFrog / <?php echo $title; ?> </title>
-	<link rel = "stylesheet" type = "text/css" href = "resources/stylesheets/style.css" />
-	<link rel = "stylesheet" type = "text/css" href = "resources/stylehseets/menu.css" />
+global $tpl;
+$tpl->assign('title', $title);
+$tpl->display('header.tpl');
 
-	<script language = "javascript" type = "text/javascript" src = "resources/javascript/menu.js"></script>
-	<script language = "javascript" type = "text/javascript" src = "resources/javascript/popup.js"></script>
-</head>
-
-<body>
+?>
 
 <div id = "header">
-	<h1>pFrog</h1>
+	<h1><a href = "index.php">pFrog</a></h1>
 		<?php
 
 		if (Session::isLoggedIn()) {
@@ -56,18 +48,21 @@ echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n"; ?>
 
 		?>
 	<div>
-		<h2>Menu</h2>
-
-		<ul>
+		<ul class = "mainmenu">
+			<li><h3>Main</h3></li>
 			<li><a href="index.php">index</a></li>
 			<li><a href="leaderboard.php">leaderbord</a></li>
 			<li><a href="map.php">map</a></li>
 			<li><a href="activitys.php">activitys</a></li>
+		</ul>
+		<ul class = "mainmenu">
 			<li><h3>Financial</h3></li>
 			<li><a href="bank.php">bank</a></li>
 			<li><a href="shop.php">shop</a></li>
 			<li><a href="slaves.php">slaves</a></li>
 			<li><a href="business.php">business</a></li>
+		</ul>
+		<ul class = "mainmenu">
 			<li><h3>Account</h3></li>
 			<li><a href="contacts.php">contacts</a></li>
 			<li><a href="clans.php">clans</a></li>
@@ -75,14 +70,14 @@ echo "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n"; ?>
 		</ul>
 	</div>
 <?php
+	$turns = getTurns(Session::getUser()->getUsername());
+	$gold = number_format(Session::getUser()->getData('gold'));
 
-	echo "<div style = 'float:left;'>";
-	echo "<strong><img src = \"resources/images/coins.jpg\" />" . number_format(Session::getUser()->getData('gold')) . "</strong> Gold. ";
-
-	$turns = Session::getUser()->getData('turns');
-
-	echo "<strong>" . $turns['remaining'] . "</strong> turns avalible, <strong>" . $turns['time'] . "</strong> seconds before next turn.";
-	echo "</div>";
+	echo '<p class = "status">';
+	echo '<span class = "metric"><strong><img src = "resources/images/gold.png" /> ' . $gold . '</strong></span> ';
+	echo '<span class = "metric"><strong><img src = "resources/images/turn.png" /> ' . $turns['remaining'] . '</strong></span> ';
+	echo '<span class = "metric"><strong><img src = "resources/images/time.png" /> ' . $turns['time'] . '</strong></span>';
+	echo "</p>";
 } else {
 	echo "<a href = \"register.php\">register</a> | ";
 	echo "<a href = \"login.php\">login</a>";

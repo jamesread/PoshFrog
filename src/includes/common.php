@@ -56,49 +56,14 @@ requirE_once 'jwrCommonsPhp/Database.php';
 
 define('LEVEL_ADMIN', 30);
 
-class pFrogUser extends \libAllure\User {
-	function isLoggedIn() {
-		return $this->getAuth();
-    }
-
-	function isAdmin() {
-		return $this->getData('level') > LEVEL_ADMIN;
-	}
-
-	function checkAdmin() {
-		if (!$this->isAdmin()) {
-			Core::raiseError('You are trying to access a restricted area.\n\n');
-		}
-	}
-
-	function getTurns() {
-		return getTurns($this->username);
-	}
-
-	function inAdminMode() {
-		if (!$this->isAdmin()) {
-			return false;
-		}
-
-		if ($this->getData('admin_mode')) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-}
-
-//
-// misc
-//
-
 if (\libAllure\Session::isLoggedIn()) {
 	$user = \libAllure\Session::getUser();
 }
 
 require_once 'jwrCommonsPhp/AuthBackendDatabase.php';
 
-\libAllure\AuthBackend::setBackend(new \libAllure\AuthBackendDatabase());
+$backend = new \libAllure\AuthBackendDatabase();
+\libAllure\AuthBackend::setBackend($backend);
 
 $breadcrumbs = array();
 $breadcrumbs[] = '<a href = "index.php">index</a>';
@@ -106,5 +71,9 @@ $breadcrumbs[] = '<a href = "index.php">index</a>';
 require_once 'libAllure/Template.php';
 
 $tpl = new \libAllure\Template('pfrog');
+
+require_once 'includes/Game.php';
+
+$game = new Game();
 
 ?>

@@ -26,15 +26,15 @@ require_once 'includes/common.php';
 $title = "index";
 require_once ("includes/widgets/header.php");
 
-if (Session::hasPriv('VIEW_ADMIN')) {
+if (\libAllure\Session::hasPriv('VIEW_ADMIN')) {
 	redirect('index.php', 'You do not have the privileges to see this.');
 }
 
 if (isset($_GET['toggle'])) {
-	if ($_GET['toggle'] == 'off') {
-			$_SESSION['admin_mode'] = 'off';
-		} else {
-			$_SESSION['admin_mode'] = 'on';
+	if (inAdminMode()) {
+		$_SESSION['admin_mode'] = false;
+	} else {
+		$_SESSION['admin_mode'] = true;
 	}
 }
 
@@ -43,17 +43,17 @@ echo "If you are an admin, and want to play the game via this account, admin mod
 easier. <br /><br />";
 
 echo "<form action = \"admin.php\">";
-if ($user->inAdminMode()) {
-	echo "<input type = \"hidden\" name = \"toggle\" value = \"on\" />";
-	echo "<input type = \"submit\" value = \"Turn admin mode on\" />";
-} else {
+if (inAdminMode()) {
 	echo "<input type = \"hidden\" name = \"toggle\" value = \"off\" />";
 	echo "<input type = \"submit\" value = \"Turn admin mode off\" />";
+} else {
+	echo "<input type = \"hidden\" name = \"toggle\" value = \"on\" />";
+	echo "<input type = \"submit\" value = \"Turn admin mode on\" />";
 }
 echo "</form>";
 stopBox(BOX_GREEN);
 
-if ($user->inAdminMode()) {
+if (inAdminMode()) {
 	startBox("Shop Admin", BOX_BLUE);
 	echo "<ul>";
 	echo "<li><a href = \"adminShopAddItem.php\">Add item</a>";

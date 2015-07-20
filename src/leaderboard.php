@@ -71,7 +71,7 @@ while ($i < sizeof($leader_array)) {
 	echo "<td>" . number_format($leader_array[$i]['ranking']) . "</td>";
 	echo "<td><a href = \"viewuser.php?user=" . $leader_array[$i]['id'] . "\">" . $leader_array[$i]['username'] . "</a></td>";
 	echo "<td>" . number_format($leader_array[$i]['gold']) . "</td>";
-	echo "<td>" . date("l, F jS", $leader_array[$i]['registered']) ."</td>";
+	echo "<td>" . $leader_array[$i]['registered'] ."</td>";
 	echo "</tr>";
 	$i++;
 }

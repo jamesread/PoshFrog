@@ -38,8 +38,6 @@ function get_turns($username) {
 function getTurns($username) {
 	$waitTimePerTurn = 100;
 
-	global $user;
-
 	$turns = array (
 			'time' => null,
 			'total' => null,
@@ -47,8 +45,8 @@ function getTurns($username) {
 			'remaining' => null
 	);
 
-	if ($username == Session::getUser()->getUsername()) {
-		$registerd = $user->getData('registered');
+	if ($username == \libAllure\Session::getUser()->getUsername()) {
+		$registerd = \libAllure\Session::getUser()->getData('registered');
 	} else {
 		global $db;
 
@@ -125,6 +123,14 @@ function array_flatten($array) {
   }
 
   return $result;
+}
+
+function inAdminMode() {
+	if (!isset($_SESSION['admin_mode'])) {
+		return false;
+	}
+
+	return $_SESSION['admin_mode'];
 }
 
 ?>

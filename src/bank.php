@@ -28,14 +28,12 @@ if (!isset($_REQUEST['submit'])) { $_GET['submit'] = "null"; }
 switch($_GET['submit']) {
 	case "deposit":
 		$sql = "UPDATE `tycoonism_users` SET `gold` = (`gold` - '" . $_GET['amount'] . "') WHERE `username` = '" . $_SESSION['username'] . "' ";
-		$result = mysql_query($sql);
-
-		echo mysql_error();
+		$stmt = DatabaseFactory()->getInstance()->prepare($sql);
+		$stmt->execute();
 
 		$sql = "UPDATE `tycoonism_users` SET `bankgold` = (`bankgold` + '" . $_GET['amount'] . "') WHERE `username` = '" . $_SESSION['username'] . "' ";
-		$result = mysql_query($sql);
-
-		echo mysql_error();
+		$stmt = DatabaseFactory()->getInstance()->prepare($sql);
+		$stmt->execute();
 
 		redirect("Gold depositied. Thank you.", "bank.php");
 
@@ -43,15 +41,12 @@ switch($_GET['submit']) {
 
 	case "withdraw":
 		$sql = "UPDATE `tycoonism_users` SET `gold` = (`gold` + (('" . $_GET['amount'] . "' / 100) * '" . $settings['bankIntrestRate'] . "') + '" . $_GET['amount'] . "') WHERE `username` = '" . $_SESSION['username'] . "' ";
-
-		$result = mysql_query($sql);
-
-		echo mysql_error();
+		$stmt = DatabaseFactory()->getInstance()->prepare($sql);
+		$stmt->execute();
 
 		$sql = "UPDATE `tycoonism_users` SET `bankgold` = (`bankgold` - '" . $_GET['amount'] . "') WHERE `username` = '" . $_SESSION['username'] . "' ";
-		$result = mysql_query($sql);
-
-		echo mysql_error();
+		$stmt = DatabaseFactory()->getInstance()->prepare($sql);
+		$stmt->execute();
 
 		redirect("Gold withdrawn, with " . $settings['bankIntrestRate'] . "% interest. Thank you.", "bank.php");
 
@@ -61,15 +56,15 @@ switch($_GET['submit']) {
 }
 
 $title = "slaves";
-require_once ("includes/widgets/header.php");
+require_once 'includes/widgets/header.php';
 
 startBox("Bank", BOX_YELLOW);
 echo "You currently have <strong>" . $user->getData('gold') . "</strong> gold and <strong>";
 echo $user->getData('bankgold') . "</strong> gold in the bank. <br /><br />";
 
-echo "The bank currently has an interest rate of <strong>" 
-. $game->getSetting('bankInterestRate') . "%</strong>. ";
+echo "The bank currently has an interest rate of <strong>" . $game->getSetting('bankInterestRate') . "%</strong>. ";
 echo "With interest, you have <strong>";
+
 $bankgold_original = $user->getData('bankgold');
 $bankgold = $bankgold_original / 100;
 $percent = $bankgold * 10;
