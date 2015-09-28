@@ -24,6 +24,7 @@
 require_once 'includes/common.php';
 $title = "Modify Tileset";
 require_once 'includes/widgets/mini_header.php';
+require_once 'libAllure/util/shortcuts.php';
 
 if (isset($submit)) {
 	$tileset = str_replace ( ' [image]', '.jpg', $tileset);
@@ -32,44 +33,59 @@ if (isset($submit)) {
 
 print_r($_REQUEST);
 
-// get info about cell
-$sql = 'SELECT * FROM `map` WHERE `quadrent` = "' . $_REQUEST['quadrent'] . '" AND `coordinates` = "' . $_REQUEST['row'] . '.' . $_REQUEST['column'] . '" LIMIT 1';
-$result = $db->query($sql);
-$cell = $result->fetchRow();
+$row = san()->filterUint('row');
+$col = san()->filterUint('column');
+$quadrent = san()->filterString('quadrent');
 
-$row = $_REQUEST['row'];
-$column = $_REQUEST['column'];
-$quadrent = $_REQUEST['quadrent'];
+function getCell($quadrant, $row, $col) {
+	global $db;
+
+	// get info about cell
+	$sql = 'SELECT * FROM `map` WHERE `quadrent` = :quadrant AND row = :row AND col = :col LIMIT 1';
+	$stmt = $db->prepare($sql);
+	$stmt->bindValue(':quadrant', $quadrant);
+	$stmt->bindValue(':row', $row);
+	$stmt->bindValue(':col', $col);
+	$stmt->execute();
+
+	$cell = $stmt->fetchRow();
+
+	if (empty($cell)) {
+		return array (
+			'tileset' => null,
+			'traversable' => false,
+			'exit' => null,
+			'exit_quadrent' => null,
+			'newCell' => true,
+		);
+	} else {
+		return $cell;
+	}
+}
+
+$cell = getCell($quadrent, $row, $col);
+
 $tileset = $cell['tileset'];
 $exit = $cell['exit'];
 $exit_to = $cell['exit_quadrent'];
 $traversable = $cell['traversable'];
 
 if (isset($_REQUEST['submit'])) {
-	if ($result->numRows() == 0) {
-		$sql = "INSERT INTO `map` ( `coordinates`, `quadrent`, `tileset`, `exit`, `exit_quadrent` ) VALUES ( '" . $row . "." . $column . "', '$quadrent', '$tileset', '$exit', '$exit_to' )";
-		$result = $db->query($sql);
-		die ("done");
+	if (isset($cell['newCell'])) {
+		$sql = "INSERT INTO `map` (row, col, `quadrent`, `tileset`, `exit`, `exit_quadrent` ) VALUES (:row, :col, '$quadrent', '$tileset', '$exit', '$exit_to' )";
+		$stmt = $db->prepare($sql);
+		$stmt->bindValue(':row', $row);
+		$stmt->bindValue(':col', $col);
+		$stmt->execute();
+		die ("done insert");
 	} else {
-		$sql = "UPDATE `map` SET `exit_quadrent` = '$exit_to', `exit` = '$exit', `tileset` = '" . $tileset. "', `traversable` = '" . $traversable . "' WHERE `quadrent` = '" . $quadrent . "' AND `coordinates` = '" . $row . "." . $column . "' LIMIT 1";
+		$sql = "UPDATE `map` SET `exit_quadrent` = '$exit_to', `exit` = '$exit', `tileset` = '" . $tileset. "', `traversable` = '" . $traversable . "' WHERE `quadrent` = '" . $quadrent . "' AND `row` = '" . $row . "' AND col = '" . $col . "' LIMIT 1";
 		$result = $db->query($sql);
-		die ("done");
-	}
-} else {
-	if ($result->numRows() == 0) {
-		// defaults for new entrys
-		$cell = array (
-			'tileset' => 'empty',
-			'traversable' => 'yes',
-			'exit' => 'none',
-			'exit_quadrent' => 'none'
-		);
-	} else {
-		$cell = $result->fetchRow();
+		die ("done update");
 	}
 }
 
-echo "<strong>Co-ordinates</strong>: " . $_REQUEST['row'] . "." . $_REQUEST['column'] . "<br />";
+echo "<strong>Co-ordinates</strong>: " . $row . "." . $col . "<br />";
 
 echo "<form>";
 // tileset
@@ -128,11 +144,11 @@ echo "exit to <select name = exit_to>\n\n";
 $sql = "SELECT * FROM `quadrents`";
 $result = $db->query($sql);
 
-while ($quadrent = $result->fetchRow()) {
-	if ($quadrent['name'] == $quadrent['exitQuadrent']) {
-		echo "\t<option selected style = 'background-color: #FF9900;'>" . $quadrent['name'] . "</option>\n";
+while ($exitQuadrent = $result->fetchRow()) {
+	if ($exitQuadrent['name'] == $exitQuadrent['exitQuadrent']) {
+		echo "\t<option selected style = 'background-color: #FF9900;'>" . $extQuadrent['name'] . "</option>\n";
 	} else {
-		echo "\t<option>" . $quadrent['name'] . "</option>\n";
+		echo "\t<option>" . $exitQuadrent['name'] . "</option>\n";
 	}
 }
 echo "</select> \n\n";
@@ -144,8 +160,8 @@ echo "<br /><br />";
 // quadrent
 echo "\n\n", '<input name = "quadrent" type = "hidden" value = "', $quadrent, '">', "\n\n";
 // co ordinates
-echo '<input type = "hidden" name = "row" value = "', $quadrent['row'], '">';
-echo '<input type = "hidden" name = "column" value = "', $quadrent['column'], '">';
+echo '<input type = "hidden" name = "row" value = "', $row, '">';
+echo '<input type = "hidden" name = "column" value = "', $col, '">';
 // submit
 echo '<input type = "submit" name = "submit" value = "save">';
 echo '</form>';

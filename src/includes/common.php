@@ -21,14 +21,14 @@
 
 *******************************************************************************/
 
-require_once 'jwrCommonsPhp/ErrorHandler.php';
-require_once 'jwrCommonsPhp/Exceptions.php';
-require_once 'jwrCommonsPhp/AuthBackend.php';
-require_once 'jwrCommonsPhp/User.php';
-require_once 'jwrCommonsPhp/Session.php';
-require_once 'jwrCommonsPhp/Logger.php';
-require_once 'jwrCommonsPhp/Form.php';
-require_once 'jwrCommonsPhp/Inflector.php';
+require_once 'libAllure/ErrorHandler.php';
+require_once 'libAllure/Exceptions.php';
+require_once 'libAllure/AuthBackend.php';
+require_once 'libAllure/User.php';
+require_once 'libAllure/Session.php';
+require_once 'libAllure/Logger.php';
+require_once 'libAllure/Form.php';
+require_once 'libAllure/Inflector.php';
 require_once 'includes/functions.php';
 
 class SimpleFatalError {}
@@ -52,7 +52,7 @@ $eh->beGreedy();
 define('INC_COMMON', true);
 require_once 'core.php';
 
-requirE_once 'jwrCommonsPhp/Database.php';
+requirE_once 'libAllure/Database.php';
 
 define('LEVEL_ADMIN', 30);
 
@@ -60,7 +60,7 @@ if (\libAllure\Session::isLoggedIn()) {
 	$user = \libAllure\Session::getUser();
 }
 
-require_once 'jwrCommonsPhp/AuthBackendDatabase.php';
+require_once 'libAllure/AuthBackendDatabase.php';
 
 $backend = new \libAllure\AuthBackendDatabase();
 \libAllure\AuthBackend::setBackend($backend);

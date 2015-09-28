@@ -43,7 +43,7 @@ $tpl->display('header.tpl');
 			echo "<div style = 'float: right;'> logged in as <strong><a href = \"viewuser.php?user=" . Session::getUser()->getId() . "\">" . Session::getUser()->getUsername() . "</a></strong>.</div>";
 
 			if (Session::hasPriv('ADMIN')) {
-				echo " | <a href = admin.php>admin</a> | ";
+				echo "<a href = admin.php>admin</a>";
 			}
 
 		?>
@@ -53,7 +53,7 @@ $tpl->display('header.tpl');
 			<li><a href="index.php">index</a></li>
 			<li><a href="leaderboard.php">leaderbord</a></li>
 			<li><a href="map.php">map</a></li>
-			<li><a href="activitys.php">activitys</a></li>
+			<li><a href="activitys.php">activities</a></li>
 		</ul>
 		<ul class = "mainmenu">
 			<li><h3>Financial</h3></li>
@@ -88,3 +88,5 @@ $tpl->display('header.tpl');
 </div>
 
 <div class = "page">
+<?php 
+

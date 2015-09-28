@@ -25,12 +25,12 @@ require_once 'includes/common.php';
 $title = "index";
 require_once ("includes/widgets/header.php");
 
-if (!isset($HTTP_GET_VARS['quadrent'])) { $HTTP_GET_VARS['quadrent'] = NULL; }
-if (!isset($HTTP_GET_VARS['row'])) { $HTTP_GET_VARS['row'] = NULL; }
-if (!isset($HTTP_GET_VARS['column'])) { $HTTP_GET_VARS['column'] = NULL; }
+if (!isset($_GET['quadrent'])) { $_GET['quadrent'] = NULL; }
+if (!isset($_GET['row'])) { $_GET['row'] = NULL; }
+if (!isset($_GET['column'])) { $_GET['column'] = NULL; }
 
-if ($HTTP_GET_VARS['quadrent'] != null && $HTTP_GET_VARS['row'] != NULL && $HTTP_GET_VARS['column'] != NULL) {
-	$result = db_query( "UPDATE `users` SET `map_location` = '" . $HTTP_GET_VARS['row'] . "." . $HTTP_GET_VARS['column'] . "' WHERE `username` = '" . $_SESSION['username'] . "' LIMIT 1");
+if ($_GET['quadrent'] != null && $_GET['row'] != NULL && $_GET['column'] != NULL) {
+	$result = db_query( "UPDATE `users` SET `map_location` = '" . $_GET['row'] . "." . $_GET['column'] . "' WHERE `username` = '" . $_SESSION['username'] . "' LIMIT 1");
 }
 
 if (!isset($_GET['quadrent'])) {
@@ -136,7 +136,7 @@ while ($row_loop <= 4 && $column_loop <= 4) {
 
 echo "</table></fieldset></div>";
 
-$quadrent = $HTTP_GET_VARS['quadrent']; $row = $HTTP_GET_VARS['row']; $column = $HTTP_GET_VARS['column'];
+$quadrent = $_GET['quadrent']; $row = $_GET['row']; $column = $_GET['column'];
 
 if (inAdminMode()) {
 	echo "<div style = 'float:top;'><fieldset>";
@@ -153,7 +153,7 @@ echo "<div style = 'float:top;'><fieldset>";
 echo "<legend>" . $quadrent . " Quadrent </legend>";
 echo "<strong>Coordinates:</strong> " . $row . "." . $column . "<br />";
 
-$sql = "SELECT * FROM `map` WHERE `coordinates` = '" . $row . "." . $column . "' AND `quadrent` = '" . $quadrent . "' LIMIT 1";
+$sql = "SELECT * FROM `map` WHERE `row` = '" . $row . "' AND col = '" . $column . "' AND `quadrent` = '" . $quadrent . "' LIMIT 1";
 $result = $db->query($sql);
 $row_result = $result->fetchRow();
 

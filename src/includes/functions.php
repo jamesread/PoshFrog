@@ -133,4 +133,18 @@ function inAdminMode() {
 	return $_SESSION['admin_mode'];
 }
 
+function redirect($url, $reason) {
+	global $core;
+	$core->redirect($url, $reason);
+}
+
+function db_query($sql) {
+	$stmt = \libAllure\DatabaseFactory::getInstance()->prepare($sql);
+	$stmt->execute();
+
+	if (strpos("SELECT", $sql) !== FALSE) {
+		return $stmt->fetchAll();
+	}
+}
+
 ?>

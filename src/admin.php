@@ -26,7 +26,7 @@ require_once 'includes/common.php';
 $title = "index";
 require_once ("includes/widgets/header.php");
 
-if (\libAllure\Session::hasPriv('VIEW_ADMIN')) {
+if (!\libAllure\Session::hasPriv('VIEW_ADMIN')) {
 	redirect('index.php', 'You do not have the privileges to see this.');
 }
 
