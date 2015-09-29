@@ -47,12 +47,12 @@ $tpl->display('header.tpl');
 			}
 
 		?>
-	<div>
+	<div id = "navigation">
 		<ul class = "mainmenu">
 			<li><h3>Main</h3></li>
 			<li><a href="index.php">index</a></li>
 			<li><a href="leaderboard.php">leaderbord</a></li>
-			<li><a href="map.php">map</a></li>
+			<li><a href="quadrants.php">quadrants</a></li>
 			<li><a href="activitys.php">activities</a></li>
 		</ul>
 		<ul class = "mainmenu">

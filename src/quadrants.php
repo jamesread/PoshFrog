@@ -25,6 +25,22 @@ require_once 'includes/common.php';
 $title = "index";
 require_once ("includes/widgets/header.php");
 
+use \libAllure\Session;
+
+function getQuadrants() {
+	global $db;
+
+	$sql = 'SELECT q.id, q.name FROM quadrents q WHERE owner = :userId';
+	$stmt = $db->prepare($sql);
+	$stmt->bindValue(':userId', Session::getUser()->getId());
+	$stmt->execute();
+
+	return $stmt->fetchAll();
+}
+
+$tpl->assign('listQuadrants', getQuadrants());
+$tpl->display('quadrant.tpl');
+
 if (!isset($_GET['quadrent'])) { $_GET['quadrent'] = NULL; }
 if (!isset($_GET['row'])) { $_GET['row'] = NULL; }
 if (!isset($_GET['column'])) { $_GET['column'] = NULL; }
@@ -102,7 +118,7 @@ while ($row_loop <= 4 && $column_loop <= 4) {
 		}
 	} else {
 		if ($row_result['traversable'] == 'yes' && \libAllure\Session::hasPriv('something')) {
-			echo "<a href = map.php?quadrent=$quadrent&row=$row_loop&column=$column_loop>";
+			echo "<a href = quadrants.php?quadrent=$quadrent&row=$row_loop&column=$column_loop>";
 		}
 
 		if  (substr($row_result['tileset'], -3, 3 ) == "jpg") {

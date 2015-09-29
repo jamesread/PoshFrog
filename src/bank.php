@@ -93,11 +93,11 @@ stopBox(BOX_YELLOW);
 </table>
 <?php
 
-startBox('Uh oh...', BOX_RED);
 if ($user->getData('gold') <= 0) {
+	startBox('Uh oh...', BOX_RED);
 	echo "You are a bankrupt tycoon.";
+	stopBox(BOX_RED);
 }
-stopBox(BOX_RED);
 
 require_once ("includes/widgets/footer.php");
 

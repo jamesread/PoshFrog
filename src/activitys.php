@@ -28,7 +28,7 @@ require_once ("includes/widgets/header.php");
 $sql = "SELECT * FROM activitys";
 $result = $db->query($sql);
 
-startBox("Activitys", BOX_GREEN);
+startBox("Activities", BOX_GREEN);
 
 echo "<ul>";
 while ($activity = $result->fetchRow()) {

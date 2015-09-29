@@ -1,0 +1,93 @@
+$page-background-color: #444
+$box-background-color: #333
+$text-color: #b4b9bd
+$border-color: $text-color
+$link-color: #e47355
+
+$highlight-background-color: black
+
+body 
+	background-color: $page-background-color
+	color: $text-color
+	font-family: sans-serif
+
+.box 
+	padding: 1em
+	background-color: $box-background-color
+
+	h2
+		text-transform: uppercase
+		font-weight: bold
+		margin: 0
+
+		&:before
+			content: '\00BB '
+			padding-right: .3em
+			color: $text-color
+
+	.boxContent
+		margin-top: 1em
+
+	.green-box
+		color: #52d273
+
+	.yellow-box
+		color: #e5c453
+
+	.red-box
+		color: #e85067
+
+	.blue-box
+		color: #46bddf
+
+a
+	color: $link-color
+	text-decoration: none
+	font-weight: bold
+
+	&:hover
+		text-decoration: underline
+		background-color: $highlight-background-color
+
+ul.mainmenu
+	display: inline-block
+	padding: 0
+	margin: 0
+	 
+	li
+		display: inline-block
+		padding: 0.25em
+
+p.status 
+	float: right
+
+body
+	width: 60%
+	margin: auto
+
+div#navigation
+	background-color: $box-background-color
+
+div.page
+	margin: 1em
+	margin-top: 3em
+
+table
+	width: 100%
+
+table.normal
+	th, tr, td
+		background-color: $box-background-color
+
+	th, td
+		padding: 1em
+		text-align: left
+
+	tr:hover td, th:hover
+		background-color: $highlight-background-color
+
+table.map td
+	border: 1px solid black
+
+table.map td:hover
+	border: 1px solid orange

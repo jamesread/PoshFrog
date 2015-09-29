@@ -86,7 +86,7 @@ function infobox($content) {
 }
 
 function startBox($name, $color) {
-	echo "<div class = \"" . $color . "-box\">";
+	echo "<div class = \"box " . $color . "-box\">";
 	echo "<h2 class = \"" . $color . "-box\">" . $name . "</h2>";
 	echo "<div class = \"boxContent\">";
 }

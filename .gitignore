@@ -1,2 +1,4 @@
 **/*.swp
 docs/api
+**/*.map
+**/.sass-cache
