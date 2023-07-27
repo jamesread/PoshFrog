@@ -1,6 +1,6 @@
 <?php
-/*******************************************************************************
 
+/*******************************************************************************
   Copyright (C) 2004-2006 xconspirisist (xconspirisist@gmail.com)
 
   This file is part of pFrog.
@@ -18,10 +18,7 @@
   You should have received a copy of the GNU General Public License
   along with pFrog; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-*******************************************************************************/
+ *******************************************************************************/
 
 require_once 'includes/functions.php';
-require_once 'includes/Game.php'; 
-
-?>
+require_once 'includes/Game.php';

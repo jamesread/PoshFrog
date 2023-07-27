@@ -1,6 +1,6 @@
 <?php
-/*******************************************************************************
 
+/*******************************************************************************
   Copyright (C) 2004-2006 xconspirisist (xconspirisist@gmail.com)
 
   This file is part of pFrog.
@@ -18,65 +18,72 @@
   You should have received a copy of the GNU General Public License
   along with pFrog; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
 *******************************************************************************/
 
 require_once 'includes/common.php';
 $title = "index";
-require_once ("includes/widgets/header.php");
+require_once "includes/widgets/header.php";
 
-use \libAllure\Session;
+use libAllure\Session;
 
-function getQuadrants() {
-	global $db;
+function getQuadrents()
+{
+    global $db;
 
-	$sql = 'SELECT q.id, q.name FROM quadrents q WHERE owner = :userId';
-	$stmt = $db->prepare($sql);
-	$stmt->bindValue(':userId', Session::getUser()->getId());
-	$stmt->execute();
+    $sql = 'SELECT q.id, q.name FROM quadrents q WHERE owner = :userId';
+    $stmt = $db->prepare($sql);
+    $stmt->bindValue(':userId', Session::getUser()->getId());
+    $stmt->execute();
 
-	return $stmt->fetchAll();
+    return $stmt->fetchAll();
 }
 
-$tpl->assign('listQuadrants', getQuadrants());
+$tpl->assign('listQuadrents', getQuadrents());
 $tpl->display('quadrant.tpl');
 
-if (!isset($_GET['quadrent'])) { $_GET['quadrent'] = NULL; }
-if (!isset($_GET['row'])) { $_GET['row'] = NULL; }
-if (!isset($_GET['column'])) { $_GET['column'] = NULL; }
+if (!isset($_GET['quadrent'])) {
+    $_GET['quadrent'] = null;
+}
+if (!isset($_GET['row'])) {
+    $_GET['row'] = null;
+}
+if (!isset($_GET['column'])) {
+    $_GET['column'] = null;
+}
 
-if ($_GET['quadrent'] != null && $_GET['row'] != NULL && $_GET['column'] != NULL) {
-	$result = db_query( "UPDATE `users` SET `map_location` = '" . $_GET['row'] . "." . $_GET['column'] . "' WHERE `username` = '" . $_SESSION['username'] . "' LIMIT 1");
+if ($_GET['quadrent'] != null && $_GET['row'] != null && $_GET['column'] != null) {
+    $result = db_query("UPDATE `users` SET `map_location` = '" . $_GET['row'] . "." . $_GET['column'] . "' WHERE `username` = '" . $_SESSION['username'] . "' LIMIT 1");
 }
 
 if (!isset($_GET['quadrent'])) {
-	$quadrent = "Alpha";
+    $quadrent = "Alpha";
 } else {
-	$quadrent = $_GET['quadrent'];
+    $quadrent = $_GET['quadrent'];
 }
 
 $sql = "SELECT `tileset`, `traversable`, row, col FROM `map` WHERE `quadrent` = '" . $quadrent . "' LIMIT 1";
 $result = $db->query($sql);
 
 if ($result->numRows() == 0) {
-	throw new Exception('No cells found for quadrent:' . $quadrent);
+    throw new Exception('No cells found for quadrent:' . $quadrent);
 }
 
-function getCell($row, $column) {
-	global $cells;
+function getCell($row, $column)
+{
+    global $cells;
 
-	foreach ($cells as $cell) {
-		if ($cell['row'] == $row && $cell['col'] == $column) {
-			return $cell;
-		}
-	}
+    foreach ($cells as $cell) {
+        if ($cell['row'] == $row && $cell['col'] == $column) {
+            return $cell;
+        }
+    }
 
-	return array(
-		'traversable' => true,
-		'tileset' => 'tree.jpg',
-	);
+    return array(
+        'traversable' => true,
+        'tileset' => 'tree.jpg',
+    );
 
-	throw new Exception('Cell not found: ' . $row . ':' . $column . ' in ' . print_r($cells, true));
+    throw new Exception('Cell not found: ' . $row . ':' . $column . ' in ' . print_r($cells, true));
 }
 
 $cells = $result->fetchAll();
@@ -85,82 +92,89 @@ echo "<div style = 'float:left;'><fieldset><legend>";
 echo $quadrent . " quadrent";
 echo "</legend><table class = \"map\">\n";
 
-$location = explode(".", $user->getData('location'));
+$location = gud('location');
 
-$row_loop = 1; $column_loop = 1;
+if ($location == null) {
+    $location = [1, 1];
+} else {
+    $location = explode(".", $location);
+}
+
+$row_loop = 1;
+$column_loop = 1;
 
 while ($row_loop <= 4 && $column_loop <= 4) {
+    if ($column_loop == 1) {
+        echo "<tr>\n";
+    }
 
-	if ($column_loop == 1) {
-		echo "<tr>\n";
-	}
+    $row_result = getCell($row_loop, $column_loop);
 
-	$row_result = getCell($row_loop, $column_loop);
+    // get cell contents
 
-	// get cell contents
+    // output cell
+    if ($location[0] == $row_loop && $location[1] == $column_loop) {
+        echo "\t<td class = map_box_here>\n";
+    } else {
+        if ($row_result['traversable'] == 'yes') {
+            echo "\t<td class = 'map_box_traversable'>\n";
+        } else {
+            echo "\t<td class = 'map_box'>\n";
+        }
+    }
 
-	// output cell
-	if ($location[0] == $row_loop && $location[1] == $column_loop) {
-		echo "\t<td class = map_box_here>\n";
-	} else {
-		if ($row_result['traversable'] == 'yes') {
-			echo "\t<td class = 'map_box_traversable'>\n";
-		} else {
-			echo "\t<td class = 'map_box'>\n";
-		}
-	}
+    if ($result->numRows() == 0) {
+        if (inAdminMode()) {
+            popup("no map data", "admin_modify_tileset.php?quadrent=$quadrent&row=$row_loop&column=$column_loop");
+        } else {
+            popup("no map data", "help.php?topic=no_map_data");
+        }
+    } else {
+        if ($row_result['traversable'] == 'yes' && \libAllure\Session::hasPriv('something')) {
+            echo "<a href = quadrants.php?quadrent=$quadrent&row=$row_loop&column=$column_loop>";
+        }
 
-	if ($result->numRows() == 0) {
-		if (inAdminMode()) {
-			popup ("no map data", "admin_modify_tileset.php?quadrent=$quadrent&row=$row_loop&column=$column_loop");
-		} else {
-			popup ("no map data", "help.php?topic=no_map_data" );
-		}
-	} else {
-		if ($row_result['traversable'] == 'yes' && \libAllure\Session::hasPriv('something')) {
-			echo "<a href = quadrants.php?quadrent=$quadrent&row=$row_loop&column=$column_loop>";
-		}
+        if (substr($row_result['tileset'], -3, 3) == "jpg") {
+            echo "<img class = null src = 'resources/images/tilesets/" . $row_result['tileset'] . "' / >";
+        } else {
+            echo $row_result['tileset'];
+        }
 
-		if  (substr($row_result['tileset'], -3, 3 ) == "jpg") {
-			echo "<img class = null src = 'resources/images/tilesets/" . $row_result['tileset'] . "' / >";
-		} else {
-			echo $row_result['tileset'];
-		}
+        if ($row_result['traversable'] == 'yes') {
+            echo "</a>";
+        }
+    }
 
-		if ($row_result['traversable'] == 'yes') {
-			echo "</a>";
-		}
+    echo "</td>\n";
 
-	}
+    //
+    // end cell
+    //
+    if ($column_loop == 4) {
+        echo "</tr>\n";
+    }
 
-	echo "</td>\n";
-
-	//
-	// end cell
-	//
-	if ($column_loop == 4) {
-		echo "</tr>\n";
-	}
-
-	if ($column_loop == 4) {
-		$column_loop = 1;
-		$row_loop ++;
-	} else {
-		$column_loop ++;
-	}
+    if ($column_loop == 4) {
+        $column_loop = 1;
+        $row_loop++;
+    } else {
+        $column_loop++;
+    }
 }
 
 echo "</table></fieldset></div>";
 
-$quadrent = $_GET['quadrent']; $row = $_GET['row']; $column = $_GET['column'];
+$quadrent = $_GET['quadrent'];
+$row = $_GET['row'];
+$column = $_GET['column'];
 
 if (inAdminMode()) {
-	echo "<div style = 'float:top;'><fieldset>";
-	echo "<legend>admin mode</legend>";
-	popup ("modify", "admin_modify_tileset.php?quadrent=$quadrent&row=$row&column=$column");
-	echo " | ";
-	popup ("create quadrent", "admin_create_quadrent.php");
-	echo "</fieldset></div>";
+    echo "<div style = 'float:top;'><fieldset>";
+    echo "<legend>admin mode</legend>";
+    popup("modify", "admin_modify_tileset.php?quadrent=$quadrent&row=$row&column=$column");
+    echo " | ";
+    popup("create quadrent", "admin_create_quadrent.php");
+    echo "</fieldset></div>";
 }
 
 
@@ -173,31 +187,34 @@ $sql = "SELECT * FROM `map` WHERE `row` = '" . $row . "' AND col = '" . $column 
 $result = $db->query($sql);
 $row_result = $result->fetchRow();
 
-if ($row_result['exit_quadrent'] != 'none') {
-	echo "<strong>Leads to:</strong> " . $row_result['exit_quadrent'] . " quadrent<br />";
-	echo "<strong>Direction: </strong>";
+if ($row_result) {
 
-		switch ($row_result['exit']) {
-		case 'left':
-			echo "<a href = map.php?quadrent=" . $row_result['exit_quadrent'] . "&row=$row&column=4>left</a>";
-			break;
+    if ($row_result['exit_quadrent'] != 'none') {
+        echo "<strong>Leads to:</strong> " . $row_result['exit_quadrent'] . " quadrent<br />";
+        echo "<strong>Direction: </strong>";
 
-		case 'right':
-			echo "<a href = map.php?quadrent=" . $row_result['exit_quadrent'] . "&row=$row&column=1>right</a>";
-			break;
+        switch ($row_result['exit']) {
+        case 'left':
+            echo "<a href = map.php?quadrent=" . $row_result['exit_quadrent'] . "&row=$row&column=4>left</a>";
+            break;
 
-		case 'top':
-			echo "<a href = map.php?quadrent=" . $row_result['exit_quadrent'] . "&row=4&column=$column>top</a>";
-			break;
+        case 'right':
+            echo "<a href = map.php?quadrent=" . $row_result['exit_quadrent'] . "&row=$row&column=1>right</a>";
+            break;
 
-		case 'bottom':
-			echo "<a href = map.php?quadrent=" . $row_result['exit_quadrent'] . "&row=1&column=$column>bottom</a>";
-			break;
+        case 'top':
+            echo "<a href = map.php?quadrent=" . $row_result['exit_quadrent'] . "&row=4&column=$column>top</a>";
+            break;
 
-			default:
-			echo "no direction specified..!";
-			break;
-	}
+        case 'bottom':
+            echo "<a href = map.php?quadrent=" . $row_result['exit_quadrent'] . "&row=1&column=$column>bottom</a>";
+            break;
+
+        default:
+            echo "no direction specified..!";
+            break;
+        }
+    }
 }
 
 ?>

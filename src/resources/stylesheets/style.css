@@ -53,8 +53,9 @@ div#navigation {
   background-color: #333; }
 
 div.page {
-  margin: 1em;
-  margin-top: 3em; }
+  margin: 0;
+  margin-top: 3em;
+}
 
 table {
   width: 100%; }
@@ -73,4 +74,26 @@ table.map td {
 table.map td:hover {
   border: 1px solid orange; }
 
-/*# sourceMappingURL=style.css.map */
+fieldset {
+  border: none;
+}
+
+input {
+  border: 1px solid black;
+  padding: .5em;
+  background-color: #bbb;
+}
+
+input:focus {
+  background-color: #fff;
+  border: 1px outset red;
+}
+
+button {
+  padding: .8em;
+  border: 1px solid black;
+  background-color: black;
+  color: white;
+  text-transform: uppercase;
+  font-weight: bold;
+}

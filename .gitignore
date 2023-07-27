@@ -2,3 +2,4 @@
 docs/api
 **/*.map
 **/.sass-cache
+/vendor/

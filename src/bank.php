@@ -1,6 +1,6 @@
 <?php
-/*******************************************************************************
 
+/*******************************************************************************
   Copyright (C) 2004-2006 xconspirisist (xconspirisist@gmail.com)
 
   This file is part of pFrog.
@@ -18,51 +18,56 @@
   You should have received a copy of the GNU General Public License
   along with pFrog; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *******************************************************************************/
 
-*******************************************************************************/
+require_once "includes/common.php";
 
-require_once ("includes/common.php");
+if (!isset($_REQUEST['submit'])) {
+    $_GET['submit'] = "null";
+}
 
-if (!isset($_REQUEST['submit'])) { $_GET['submit'] = "null"; }
+use libAllure\DatabaseFactory;
+use libAllure\Session;
 
-switch($_GET['submit']) {
-	case "deposit":
-		$sql = "UPDATE `tycoonism_users` SET `gold` = (`gold` - '" . $_GET['amount'] . "') WHERE `username` = '" . $_SESSION['username'] . "' ";
-		$stmt = DatabaseFactory()->getInstance()->prepare($sql);
-		$stmt->execute();
+switch ($_GET['submit']) {
+    case 'loan':
+        adjustUserGold(100);
 
-		$sql = "UPDATE `tycoonism_users` SET `bankgold` = (`bankgold` + '" . $_GET['amount'] . "') WHERE `username` = '" . $_SESSION['username'] . "' ";
-		$stmt = DatabaseFactory()->getInstance()->prepare($sql);
-		$stmt->execute();
+        redirect('bank.php', 'Loan application approved!');
+        break;
 
-		redirect("Gold depositied. Thank you.", "bank.php");
+    case "deposit":
+        $amount = intval($_REQUEST['amount']);
 
-		break;
+        adjustUserGold(-$amount, $amount);
 
-	case "withdraw":
-		$sql = "UPDATE `tycoonism_users` SET `gold` = (`gold` + (('" . $_GET['amount'] . "' / 100) * '" . $settings['bankIntrestRate'] . "') + '" . $_GET['amount'] . "') WHERE `username` = '" . $_SESSION['username'] . "' ";
-		$stmt = DatabaseFactory()->getInstance()->prepare($sql);
-		$stmt->execute();
+        redirect('bank.php', "Gold deposited. Thank you.");
 
-		$sql = "UPDATE `tycoonism_users` SET `bankgold` = (`bankgold` - '" . $_GET['amount'] . "') WHERE `username` = '" . $_SESSION['username'] . "' ";
-		$stmt = DatabaseFactory()->getInstance()->prepare($sql);
-		$stmt->execute();
+        break;
 
-		redirect("Gold withdrawn, with " . $settings['bankIntrestRate'] . "% interest. Thank you.", "bank.php");
+    case "withdraw":
+        $amount = intval($_REQUEST['amount']);
 
-		break;
+        adjustUserGold($amount, -$amount);
 
-	default: break;
+        redirect('bank.php', "Gold withdrawn, with " . $game->getSetting('bankIntrestRate') . "% interest. Thank you.");
+
+        break;
+
+    default:
+        break;
 }
 
 $title = "slaves";
 require_once 'includes/widgets/header.php';
 
+$user = \libAllure\Session::getUser();
+
 startBox("Bank", BOX_YELLOW);
 echo "You currently have <strong>" . $user->getData('gold') . "</strong> gold and <strong>";
 echo $user->getData('bankgold') . "</strong> gold in the bank. <br /><br />";
 
-echo "The bank currently has an interest rate of <strong>" . $game->getSetting('bankInterestRate') . "%</strong>. ";
+//echo "The bank currently has an interest rate of <strong>" . $game->getSetting('bankInterestRate') . "%</strong>. ";
 echo "With interest, you have <strong>";
 
 $bankgold_original = $user->getData('bankgold');
@@ -76,29 +81,29 @@ stopBox(BOX_YELLOW);
 ?>
 <table class = "normal">
 <tr>
-	<th>deposit</th>
-	<th>withdraw</th>
+        <th>deposit</th>
+        <th>withdraw</th>
 </tr>
 <tr>
-	<td>
-	How much would you like to deposit?
-	<form><input name = "amount">&nbsp;<input type = "submit" name = "submit" value = "deposit"></form>
-	</td>
+        <td>
+        How much would you like to deposit?
+        <form><input name = "amount">&nbsp;<input type = "submit" name = "submit" value = "deposit"></form>
+        </td>
 
-	<td>
-	How much would you like to withdraw?
-	<form><input name = "amount" />&nbsp;<input type = "submit" name = "submit" value = "withdraw"></form>
-	</td>
+        <td>
+        How much would you like to withdraw?
+        <form><input name = "amount" />&nbsp;<input type = "submit" name = "submit" value = "withdraw"></form>
+        </td>
 </tr>
 </table>
 <?php
 
 if ($user->getData('gold') <= 0) {
-	startBox('Uh oh...', BOX_RED);
-	echo "You are a bankrupt tycoon.";
-	stopBox(BOX_RED);
+    startBox('Uh oh...', BOX_RED);
+    echo 'You are a bankrupt tycoon. The bank offers you an <a href = "bank.php?submit=loan">emergency loan</a>. ';
+    stopBox(BOX_RED);
 }
 
-require_once ("includes/widgets/footer.php");
+require_once "includes/widgets/footer.php";
 
 ?>

@@ -1,6 +1,6 @@
 <?php
-/*******************************************************************************
 
+/*******************************************************************************
   Copyright (C) 2004-2006 xconspirisist (xconspirisist@gmail.com)
 
   This file is part of pFrog.
@@ -18,41 +18,43 @@
   You should have received a copy of the GNU General Public License
   along with pFrog; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-*******************************************************************************/
+ *******************************************************************************/
 
 require_once 'includes/common.php';
 
-use \libAllure\ElementInput;
-use \libAllure\ElementPassword;
-use \libAllure\Session;
+use libAllure\ElementInput;
+use libAllure\ElementPassword;
+use libAllure\Session;
 
-class FormLogin extends \libAllure\Form {
-	public function __construct() {
-		$this->addElement(new ElementInput('username', 'Username'));
-		$this->addElement(new ElementPassword('password', 'Password'));
-		$this->addDefaultButtons();
-	}
+class FormLogin extends \libAllure\Form
+{
+    public function __construct()
+    {
+        parent::__construct('login', 'Login');
+        $this->addElement(new ElementInput('username', 'Username'));
+        $this->addElement(new ElementPassword('password', 'Password'));
+        $this->addDefaultButtons('Login');
+    }
 }
 
 $f = new FormLogin();
 
 if ($f->validate()) {
-	$username = $f->getElementValue('username');
-	$password = $f->getElementValue('password');
+    $username = $f->getElementValue('username');
+    $password = $f->getElementValue('password');
 
-	try {
-		//Session::isLoggedIn();
-		Session::checkCredentials($username, $password);
+    try {
+        //Session::isLoggedIn();
+        Session::checkCredentials($username, $password);
 
-		require_once 'includes/widgets/header.minimal.php';
+        include_once 'includes/widgets/header.minimal.php';
 
-		$core->redirect('index.php', 'Thanks for logging in.');
-	} catch (UserNotFoundException $e) {
-		$f->setElementError('username', 'User not found');
-	} catch (IncorrectPasswordException $e) {
-		$f->setElementError('password', 'Incorrect password.');
-	}
+        $core->redirect('index.php', 'Thanks for logging in.');
+    } catch (UserNotFoundException $e) {
+        $f->setElementError('username', 'User not found');
+    } catch (IncorrectPasswordException $e) {
+        $f->setElementError('password', 'Incorrect password.');
+    }
 }
 
 $title = "login";
@@ -60,7 +62,4 @@ require_once 'includes/widgets/header.php';
 
 $tpl->displayForm($f);
 
-require_once ("includes/widgets/footer.php");
-
-?>
-
+require_once "includes/widgets/footer.php";

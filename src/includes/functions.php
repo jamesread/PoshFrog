@@ -1,6 +1,6 @@
 <?php
-/*******************************************************************************
 
+/*******************************************************************************
   Copyright (C) 2004-2006 xconspirisist (xconspirisist@gmail.com)
 
   This file is part of pFrog.
@@ -18,8 +18,7 @@
   You should have received a copy of the GNU General Public License
   along with pFrog; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-*******************************************************************************/
+ *******************************************************************************/
 
 define('BOX_RED', "red");
 define('BOX_GREEN', "green");
@@ -27,73 +26,91 @@ define('BOX_YELLOW', "yellow");
 define('BOX_BLUE', "blue");
 define('BOX_NULL', "");
 
-function getProgramName() {
-	return 'pfrog';
+use libAllure\DatabaseFactory;
+use libAllure\Session;
+
+function getProgramName()
+{
+    return 'pfrog';
 }
 
-function get_turns($username) {
-	return getTurns($username);
+function gud($key)
+{
+    return Session::getUser()->getData($key);
 }
 
-function getTurns($username) {
-	$waitTimePerTurn = 100;
+function get_turns($username)
+{
+    return getTurns($username);
+}
 
-	$turns = array (
-			'time' => null,
-			'total' => null,
-			'used' => null,
-			'remaining' => null
-	);
+function getTurns($username)
+{
+    $waitTimePerTurn = 100;
 
-	if ($username == \libAllure\Session::getUser()->getUsername()) {
-		$registerd = \libAllure\Session::getUser()->getData('registered');
-	} else {
-		global $db;
+    $turns = array (
+        'time' => null,
+        'total' => null,
+        'used' => null,
+        'remaining' => null
+    );
 
-		$sql = 'SELECT `usedturns`, `registerd` FROM `pfrog_users` WHERE "' . $username . '" LIMIT 1 ';
-		$result = $db->query($sql);
-		$result = $result->fetchRow();
-		$registerd = $result['registerd'];
-		$turns['used'] = $result['usedTurns'];
-	}
+    if ($username == Session::getUser()->getUsername()) {
+        $registerd = Session::getUser()->getData('registered');
+        $registerd = 0;
+    } else {
+        global $db;
 
-	$now = time();
-	$timelapse = ($now - $registerd);
+        $sql = 'SELECT `usedturns`, unix_timestamp(`registerd`) as registerd FROM `pfrog_users` WHERE "' . $username . '" LIMIT 1 ';
+        $result = $db->query($sql);
+        $result = $result->fetchRow();
+        $registerd = $result['registerd'];
+        $turns['used'] = $result['usedTurns'];
+    }
 
-	$blocks = $timelapse / $waitTimePerTurn;
-	$temp = explode ('.', $blocks);
+    $now = time();
+    $timelapse = ($now - $registerd);
 
-	if (strlen($temp[1]) == 1) { $temp[1] = $temp[1] . 0; }
+    $blocks = $timelapse / $waitTimePerTurn;
+    $temp = explode('.', $blocks);
 
-	$time_left = $waitTimePerTurn - $temp[1];
+    if (strlen($temp[1]) == 1) {
+        $temp[1] = $temp[1] . 0;
+    }
 
-	$temp[0] = ($temp[0] - $turns['used']);
+    $time_left = $waitTimePerTurn - $temp[1];
 
-	$turns['time'] = $time_left;
+    $temp[0] = ($temp[0] - $turns['used']);
+
+    $turns['time'] = $time_left;
     $turns['total'] = $blocks;
     $turns['total_turns'] = $blocks;
-	$turns['remaining'] = $temp[0];
+    $turns['remaining'] = $temp[0];
 
-	return $turns;
+    return $turns;
 }
 
-function popup ($text, $url) {
-	echo "<a href=\"#\" onclick=\"return popitup('$url')\">$text</a>";
+function popup($text, $url)
+{
+    echo "<a href=\"#\" onclick=\"return popitup('$url')\">$text</a>";
 }
 
-function infobox($content) {
-	echo $content;
+function infobox($content)
+{
+    echo $content;
 }
 
-function startBox($name, $color) {
-	echo "<div class = \"box " . $color . "-box\">";
-	echo "<h2 class = \"" . $color . "-box\">" . $name . "</h2>";
-	echo "<div class = \"boxContent\">";
+function startBox($name, $color)
+{
+    echo "<div class = \"box " . $color . "-box\">";
+    echo "<h2 class = \"" . $color . "-box\">" . $name . "</h2>";
+    echo "<div class = \"boxContent\">";
 }
 
-function stopBox($color) {
-	echo "</div>";
-	echo "</div><br />";
+function stopBox($color)
+{
+    echo "</div>";
+    echo "</div><br />";
 }
 
 /*
@@ -104,47 +121,77 @@ function stopBox($color) {
  * a[x][y][z] becomes a[implode(sep, array(x,y,z))]
  */
 
-function array_flatten($array) {
-  $result = array();
-  $stack = array();
-  array_push($stack, array("", $array));
+function array_flatten($array)
+{
+    $result = array();
+    $stack = array();
+    array_push($stack, array("", $array));
 
-  while (count($stack) > 0) {
-    list($prefix, $array) = array_pop($stack);
+    while (count($stack) > 0) {
+        list($prefix, $array) = array_pop($stack);
 
-    foreach ($array as $key => $value) {
-      $new_key = $prefix . strval($key);
+        foreach ($array as $key => $value) {
+            $new_key = $prefix . strval($key);
 
-      if (is_array($value))
-        array_push($stack, array($new_key . '.', $value));
-      else
-        $result[$new_key] = $value;
+            if (is_array($value)) {
+                array_push($stack, array($new_key . '.', $value));
+            } else {
+                $result[$new_key] = $value;
+            }
+        }
     }
-  }
 
-  return $result;
+    return $result;
 }
 
-function inAdminMode() {
-	if (!isset($_SESSION['admin_mode'])) {
-		return false;
-	}
+function inAdminMode()
+{
+    if (!isset($_SESSION['admin_mode'])) {
+        return false;
+    }
 
-	return $_SESSION['admin_mode'];
+    return $_SESSION['admin_mode'];
 }
 
-function redirect($url, $reason) {
-	global $core;
-	$core->redirect($url, $reason);
+function redirect($url, $reason)
+{
+    global $core;
+    $core->redirect($url, $reason);
 }
 
-function db_query($sql) {
-	$stmt = \libAllure\DatabaseFactory::getInstance()->prepare($sql);
-	$stmt->execute();
+function db_query($sql)
+{
+    $stmt = \libAllure\DatabaseFactory::getInstance()->prepare($sql);
+    $stmt->execute();
 
-	if (strpos("SELECT", $sql) !== FALSE) {
-		return $stmt->fetchAll();
-	}
+    if (strpos("SELECT", $sql) !== false) {
+        return $stmt->fetchAll();
+    }
 }
 
-?>
+function showHint()
+{
+    $sql = "SELECT * FROM `hints` ORDER BY rand() LIMIT 1 ";
+    $stmt = \libAllure\DatabaseFactory::getInstance()->prepare($sql);
+    $stmt->execute();
+    $hint = $stmt->fetchRow();
+
+    if ($stmt->numRows() > 0) {
+        startBox("Random Game Hint #" . ($hint['id']), BOX_YELLOW);
+        echo $hint['content'];
+        stopBox(BOX_YELLOW);
+    }
+}
+
+function adjustUserGold(int $currentAccount, int $bankAccount = 0)
+{
+    $sql = 'UPDATE users SET gold = (gold + :current), bankGold = (bankGold + :bank) WHERE id = :user';
+    $stmt = DatabaseFactory::getInstance()->prepare($sql);
+    $stmt->bindValue(':user', Session::getUser()->getId());
+    $stmt->bindValue(':current', $currentAccount);
+    $stmt->bindValue(':bank', $bankAccount);
+    $stmt->execute();
+
+    Session::getUser()->getData('gold', false);
+//    Session::getUser()->getData('bankGold', false);
+}

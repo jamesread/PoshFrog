@@ -1,6 +1,6 @@
 <?php
-/*******************************************************************************
 
+/*******************************************************************************
   Copyright (C) 2004-2006 xconspirisist (xconspirisist@gmail.com)
 
   This file is part of pFrog.
@@ -18,75 +18,30 @@
   You should have received a copy of the GNU General Public License
   along with pFrog; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-*******************************************************************************/
+ *******************************************************************************/
 
 require_once 'includes/common.php';
 
-use \libAllure\Session;
+use libAllure\Session;
 
 if (!isset($title)) {
-	$title = 'Untitled page';
+    $title = 'Untitled page';
 }
 
 global $tpl;
 $tpl->assign('title', $title);
-$tpl->display('header.tpl');
 
-?>
+$tpl->assign('isLoggedIn', Session::isLoggedIn());
 
-<div id = "header">
-	<h1><a href = "index.php">pFrog</a></h1>
-		<?php
+if (Session::isLoggedIn()) {
+    $tpl->assign('isAdmin', Session::hasPriv('ADMIN'));
+    $tpl->assign('user', Session::getUser());
 
-		if (Session::isLoggedIn()) {
-			echo "<div style = 'float: right;'> logged in as <strong><a href = \"viewuser.php?user=" . Session::getUser()->getId() . "\">" . Session::getUser()->getUsername() . "</a></strong>.</div>";
+    $turns = getTurns(Session::getUser()->getUsername());
+    $gold = number_format(Session::getUser()->getData('gold'));
 
-			if (Session::hasPriv('ADMIN')) {
-				echo "<a href = admin.php>admin</a>";
-			}
-
-		?>
-	<div id = "navigation">
-		<ul class = "mainmenu">
-			<li><h3>Main</h3></li>
-			<li><a href="index.php">index</a></li>
-			<li><a href="leaderboard.php">leaderbord</a></li>
-			<li><a href="quadrants.php">quadrants</a></li>
-			<li><a href="activitys.php">activities</a></li>
-		</ul>
-		<ul class = "mainmenu">
-			<li><h3>Financial</h3></li>
-			<li><a href="bank.php">bank</a></li>
-			<li><a href="shop.php">shop</a></li>
-			<li><a href="slaves.php">slaves</a></li>
-			<li><a href="business.php">business</a></li>
-		</ul>
-		<ul class = "mainmenu">
-			<li><h3>Account</h3></li>
-			<li><a href="contacts.php">contacts</a></li>
-			<li><a href="clans.php">clans</a></li>
-			<li><a href="logout.php">logout</a></li>
-		</ul>
-	</div>
-<?php
-	$turns = getTurns(Session::getUser()->getUsername());
-	$gold = number_format(Session::getUser()->getData('gold'));
-
-	echo '<p class = "status">';
-	echo '<span class = "metric"><strong><img src = "resources/images/gold.png" /> ' . $gold . '</strong></span> ';
-	echo '<span class = "metric"><strong><img src = "resources/images/turn.png" /> ' . $turns['remaining'] . '</strong></span> ';
-	echo '<span class = "metric"><strong><img src = "resources/images/time.png" /> ' . $turns['time'] . '</strong></span>';
-	echo "</p>";
-} else {
-	echo "<a href = \"register.php\">register</a> | ";
-	echo "<a href = \"login.php\">login</a>";
+    $tpl->assign('gold', $gold);
+    $tpl->assign('turns', $turns);
 }
 
-?>
-
-</div>
-
-<div class = "page">
-<?php 
-
+$tpl->display('header.tpl');

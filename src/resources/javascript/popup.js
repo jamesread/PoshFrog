@@ -1,5 +1,4 @@
 /*******************************************************************************
-
   Copyright (C) 2004-2006 xconspirisist (xconspirisist@gmail.com)
 
   This file is part of pFrog.
@@ -17,11 +16,12 @@
   You should have received a copy of the GNU General Public License
   along with pFrog; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *******************************************************************************/
 
-*******************************************************************************/
-
-function popitup(url) {
-	newwindow=window.open(url,'name','height=280,width=400,left=100,top=100');
-	if (window.focus) {newwindow.focus()}
-	return false;
+function popitup(url)
+{
+    newwindow = window.open(url,'name','height=280,width=400,left=100,top=100');
+    if (window.focus) {
+        newwindow.focus()}
+    return false;
 }

@@ -1,6 +1,6 @@
 <?php
-/*******************************************************************************
 
+/*******************************************************************************
   Copyright (C) 2004-2006 xconspirisist (xconspirisist@gmail.com)
 
   This file is part of pFrog.
@@ -18,13 +18,12 @@
   You should have received a copy of the GNU General Public License
   along with pFrog; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-*******************************************************************************/
+ *******************************************************************************/
 
 if (isset($title)) {
-	echo "<h1>" . $title . "</h1>";
+    echo "<h1>" . $title . "</h1>";
 } else {
-	Core::raiseError('Page title not set');
+    Core::raiseError('Page title not set');
 }
 
 ?>
@@ -37,16 +36,16 @@ if (isset($title)) {
 <!--
 function popitup(url)
 {
-	newwindow=window.open(url,'name','height=280,width=400');
-	if (window.focus) {newwindow.focus()}
-	return false;
+    newwindow=window.open(url,'name','height=280,width=400');
+    if (window.focus) {newwindow.focus()}
+    return false;
 }
 
 // -->
 </SCRIPT>
 
-	<link rel = "stylesheet" href = "resources/stylesheets/style.css">
-	<title><?php echo $title; ?></title>
+    <link rel = "stylesheet" href = "resources/stylesheets/style.css">
+    <title><?php echo $title; ?></title>
 </head>
 
 <body class = "noBgImage">

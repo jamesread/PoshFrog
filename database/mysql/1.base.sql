@@ -1,3 +1,4 @@
+-- +migrate Up
 -- phpMyAdmin SQL Dump
 -- version 2.6.3-pl1
 -- http://www.phpmyadmin.net
@@ -171,3 +172,5 @@ CREATE TABLE `users` (
   `email` varchar(255) NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=5 ;
+
+-- +migrate Down

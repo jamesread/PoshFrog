@@ -1,6 +1,6 @@
 <?php
-/*******************************************************************************
 
+/*******************************************************************************
   Copyright (C) 2004-2006 xconspirisist (xconspirisist@gmail.com)
 
   This file is part of pFrog.
@@ -18,10 +18,9 @@
   You should have received a copy of the GNU General Public License
   along with pFrog; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *******************************************************************************/
 
-*******************************************************************************/
-
-require_once ("includes/common.php");
+require_once "includes/common.php";
 
 ?>
 
@@ -34,36 +33,38 @@ require_once ("includes/common.php");
 <?php
 
 $item = $HTTP_GET_VARS['item'];
-$result = db_query ("SELECT * FROM tycoonism_shop WHERE name = '" . $item . "' LIMIT 1");
+$result = db_query("SELECT * FROM tycoonism_shop WHERE name = '" . $item . "' LIMIT 1");
 
 if (count_rows($result) == 0) {
-	message ( TYPE_ERROR, 'Cannot get item info.');
+    message(TYPE_ERROR, 'Cannot get item info.');
 }
 
 while ($row = mysql_fetch_array($result)) {
-	echo "<strong>" . $row['name'] . "</strong><hr>";
-	$temp = get_userdata($_SESSION['username']);
-	$gold = $temp['gold'];
+    echo "<strong>" . $row['name'] . "</strong><hr>";
+    $temp = get_userdata($_SESSION['username']);
+    $gold = $temp['gold'];
 
-	$turns = get_turns($_SESSION['username']);
+    $turns = get_turns($_SESSION['username']);
 
-	if ($gold >= $row['gold']) {
-	if ($turns['turns'] >= $row['turns']) {
-	
-	if (isset($HTTP_GET_VARS['submit'])) {
-		db_query ("INSERT INTO `tycoonism_inventory` ( `owner` , `item` , `type` ) VALUES ( '" . $_SESSION['username'] . "', '" . $row['name'] . "', '" . $row['type'] . "' )");
-		db_query ("UPDATE tycoonism_users SET `gold` = (`gold` - " . $row['gold'] . "), `usedturns` = (`usedturns` + " . $row['turns'] . " ) WHERE username = '" . $_SESSION['username'] . "'");
-		die ("done");
-	} else {
-		echo "<strong>Description:</strong> " . $row['description'];
-		echo "<br /><br /><strong>Gold:</strong> ";
-		echo $row['gold']; 
-		echo "<br /><br /><strong>Turns:</strong> ";
-		echo $row['turns']; 
-	}
-
-	} else { die ("You dont have enough turns. You need <strong>" . $row['turns'] . "</strong>"); }
-	} else { die ("You dont have enough gold. You need <strong>" . $row['gold'] . "</strong>"); }
+    if ($gold >= $row['gold']) {
+        if ($turns['turns'] >= $row['turns']) {
+            if (isset($HTTP_GET_VARS['submit'])) {
+                db_query("INSERT INTO `tycoonism_inventory` ( `owner` , `item` , `type` ) VALUES ( '" . $_SESSION['username'] . "', '" . $row['name'] . "', '" . $row['type'] . "' )");
+                db_query("UPDATE tycoonism_users SET `gold` = (`gold` - " . $row['gold'] . "), `usedturns` = (`usedturns` + " . $row['turns'] . " ) WHERE username = '" . $_SESSION['username'] . "'");
+                die("done");
+            } else {
+                echo "<strong>Description:</strong> " . $row['description'];
+                echo "<br /><br /><strong>Gold:</strong> ";
+                echo $row['gold'];
+                echo "<br /><br /><strong>Turns:</strong> ";
+                echo $row['turns'];
+            }
+        } else {
+            die("You dont have enough turns. You need <strong>" . $row['turns'] . "</strong>");
+        }
+    } else {
+        die("You dont have enough gold. You need <strong>" . $row['gold'] . "</strong>");
+    }
 }
 
 ?>

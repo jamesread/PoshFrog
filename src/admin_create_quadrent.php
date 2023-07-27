@@ -1,6 +1,6 @@
 <?php
-/*******************************************************************************
 
+/*******************************************************************************
   Copyright (C) 2004-2006 xconspirisist (xconspirisist@gmail.com)
 
   This file is part of pFrog.
@@ -18,34 +18,33 @@
   You should have received a copy of the GNU General Public License
   along with pFrog; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *******************************************************************************/
 
-*******************************************************************************/
-
-require_once ("includes/common.php");
+require_once "includes/common.php";
 
 $title = "Create Quadrent";
 require_once 'includes/widgets/mini_header.php';
 
 if (isset($_REQUEST['submit'])) {
-	$sql = 'INSERT INTO `quadrents` (`name`) VALUES ("' . $_REQUEST['name'] . '")';
-	$result = $db->query($sql);
+    $sql = 'INSERT INTO `quadrents` (`name`, `owner`) VALUES ("' . $_REQUEST['name'] . '", 0)';
+    $result = $db->query($sql);
 
-	echo 'done', '<a href = "javascript:window.close()">Close</a>';
-	exit;
+    echo 'done', '<a href = "javascript:window.close()">Close</a>';
+    exit;
 } else {
-	echo "<form>";
-	echo '<input name = "name">';
-	echo '<input name = "submit" value = "add" type = "submit">';
-	echo "</form>";
+    echo "<form>";
+    echo '<input name = "name">';
+    echo '<input name = "submit" value = "add" type = "submit">';
+    echo "</form>";
 
-	$sql = "SELECT * FROM `quadrents` ORDER BY `id`";
-	$result = $db->query($sql);
+    $sql = "SELECT * FROM `quadrents` ORDER BY `id`";
+    $result = $db->query($sql);
 
-	echo "<ol>";
-	while ($quadrents = $result->fetchRow()) {
-		echo "<li>" . $quadrents['name'] . "</li>";
-	}
-	echo "</ol>";
+    echo "<ol>";
+    while ($quadrents = $result->fetchRow()) {
+        echo "<li>" . $quadrents['name'] . "</li>";
+    }
+    echo "</ol>";
 }
 ?>
 

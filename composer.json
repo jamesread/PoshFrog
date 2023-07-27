@@ -1,0 +1,15 @@
+{
+	"autoload": {
+		"psr-4": {
+			"pfrog\\": "src/includes/"
+		}
+	},
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.7",
+        "phpunit/phpunit": "^10.2"
+    },
+    "require": {
+        "jwread/lib-allure": "^8.0",
+        "smarty/smarty": "^4.3"
+    }
+}

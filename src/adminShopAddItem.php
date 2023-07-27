@@ -1,6 +1,6 @@
 <?php
-/*******************************************************************************
 
+/*******************************************************************************
   Copyright (C) 2004-2006 xconspirisist (xconspirisist@gmail.com)
 
   This file is part of pFrog.
@@ -18,60 +18,65 @@
   You should have received a copy of the GNU General Public License
   along with pFrog; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *******************************************************************************/
 
-*******************************************************************************/
+require_once "includes/common.php";
 
-require_once("includes/common.php");
+use libAllure\DatabaseFactory;
+use libAllure\ElementInput;
+use libAllure\ElementNumeric;
+use libAllure\ElementSelect;
+use libAllure\FormHandler;
 
-use \libAllure\DatabaseFactory;
+class FormShopAdd extends \libAllure\Form
+{
+    public function __construct()
+    {
+        parent::__construct('addItem', 'Add Item');
 
-if (isset($_GET['submit'])) {
-	if (!is_numeric($_GET['gold'])) {
-		$title = "Add shop item";
-		require_once("includes/widgets/header.php");
-		message(TYPE_ERROR, "Invalid gold field.");
-	}
+        $this->addElement(new ElementInput('name', 'Name'));
+        $this->addElement(new ElementInput('description', 'Description'));
+        $this->addElement($this->getTypeElement());
+        $this->addElement(new ElementNumeric('gold', 'Gold', 0));
+        $this->addElement(new ElementNumeric('turns', 'Turns', 0));
+        $this->addDefaultButtons('add');
+    }
 
-	if (!is_numeric($_GET['turns'])) {
-		$title = "Add shop item";
-		require_once("includes/widgets/header.php");
-		message(TYPE_ERROR, "Invalid turns field.");
-	}
+    private function getTypeElement() 
+    {
+        $el = new ElementSelect('type', 'Type');
+        $el->addOption('SLAVE');
+        $el->addOption('BUSINESS');
+        $el->addOption('ACCESSORY');
 
-	if ($_GET['type'] == "SLAVE") {
-		$sql = "INSERT INTO `slaves` (`name`, `gold` ) VALUES ('" . $_GET['name'] . "', '" . $_GET['gold'] . "')";
-	} else {
-		$sql = "INSERT INTO `shop` (`type`, `name`, `gold`, `turns`, `description`) VALUES ('" . $_GET['type'] . "', '" . $_GET['name'] . "', '" . $_GET['gold'] . "', '" . $_GET['turns'] . "', '" . $_GET['type'] . "' )"; 	
-	} 
+        return $el;
+    }
 
-	$stmt = DatabaseFactory::getInstance()->prepare($sql);
-	$stmt->execute();
+    public function process()
+    {
+        if ($this->getElementValue('type') == 'SLAVE') {
+            $sql = 'INSERT INTO `slaves` (`name`, `gold` ) VALUES (:name, :gold)';
+            $stmt = DatabaseFactory::getInstance()->prepare($sql);
+        } else {
+            $sql = 'INSERT INTO `shop` (`type`, `name`, `gold`, `turns`, `description`) VALUES (:type, :name, :gold, :turns, :description)';
+            $stmt = DatabaseFactory::getInstance()->prepare($sql);
+            $this->bindStatementValues($stmt, ['type', 'turns', 'description']);
+        }
 
-	$core->redirect('admin.php', "Item added successfully.");
+        $this->bindStatementValues($stmt, ['name', 'gold']);
+
+        $stmt->execute();
+
+        redirect('admin.php', "Item added successfully.");
+    }
 }
 
+$fh = new FormHandler('formShopAdd', $tpl);
+
 $title = "Add shop item";
-require_once("includes/widgets/header.php");
 
-startBox($title, BOX_GREEN);
-?>
+require_once "includes/widgets/header.php";
 
-<form action = "adminShopAddItem.php">
-<label>Type <select name = "type">
-	<option>BUSINESS</option>
-	<option>SLAVE</option>
-	<option>ACCESSORY</option>
-</select></label><br /><br />
-<label>Name <input name = "name" /></label><br /><br />
-<label>Gold <input name = "gold" /></label><br /><br />
-<label>Turns <input name = "turns" /></label><br /><br />
-<label>Description<br /><textarea name = "description"></textarea></label><br /><br />
-<input type = "submit" name = "submit" value = "add" />
-</form>
+$fh->handle();
 
-<?php
-stopBox(BOX_GREEN);
-
-require_once("includes/widgets/footer.php");
-
-?>
+require_once "includes/widgets/footer.php";

@@ -1,6 +1,6 @@
 <?php
-/*******************************************************************************
 
+/*******************************************************************************
   Copyright (C) 2004-2006 xconspirisist (xconspirisist@gmail.com)
 
   This file is part of pFrog.
@@ -18,18 +18,17 @@
   You should have received a copy of the GNU General Public License
   along with pFrog; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *******************************************************************************/
 
-*******************************************************************************/
+require_once "includes/common.php";
 
-require_once ("includes/common.php");
-
-use \libAllure\DatabaseFactory;
+use libAllure\DatabaseFactory;
 
 ?>
 
 <head>
 <link rel = stylesheet href = includes/widgets/style.css>
-	<title>Do activity.</title>
+    <title>Do activity.</title>
 </head>
 
 <body class = "noBgImage">
@@ -41,31 +40,30 @@ $stmt = DatabaseFactory::getInstance()->prepare("SELECT * FROM activitys WHERE n
 $stmt->execute();
 
 foreach ($stmt->fetchAll() as $row) {
-	echo "<strong>";
-	echo $row['name'];
-	echo "</strong><hr>"; 
+    echo "<strong>";
+    echo $row['name'];
+    echo "</strong><hr>";
 
-	if (isset($_GET['action'])) {
+    if (isset($_GET['action'])) {
+        $sql = "UPDATE `users` SET `gold` = (`gold` + " . $row['gold'] . "), `usedturns` = (`usedturns` + " . $row['turns'] . ") WHERE `username` = '" . $userdata['username'] . "' LIMIT 1";
+        $result2 = DatabaseFactory::getInstance()->prepare($sql);
 
-		$sql = "UPDATE `users` SET `gold` = (`gold` + " . $row['gold'] . "), `usedturns` = (`usedturns` + " . $row['turns'] . ") WHERE `username` = '" . $userdata['username'] . "' LIMIT 1";
-		$result2 = DatabaseFactory::getInstance()->prepare($sql);
+        if ($result2) {
+            echo "Thanks for doing the " . $row['name'] . ".";
+        } else {
+            message(TYPE_ERROR_SQL, "Cannot update user table.");
+        }
+    } else {
+        $turns =  get_turns($_SESSION['username']);
+        $turns = $turns['turns'];
 
-		if ($result2) {
-			echo "Thanks for doing the " . $row['name'] . ".";
-		} else {
-			message ( TYPE_ERROR_SQL, "Cannot update user table.");
-		}
-
-	} else {
-		$turns =  get_turns($_SESSION['username']); $turns = $turns['turns'];
-
-		if ($turns >= $row['turns']) {
-			echo "This will take " . $row['turns'] . " turns, you will earn " . $row['gold'] . " gold.";
-			echo "<br /><br /><div align = right><form><input type = hidden name = activity value = '" . $activity . "'><input type = submit name = action value = 'do it'></form></div>";
-		} else {
-			echo "You dont have enough turns avalible to do this!";
-		}
-	}
+        if ($turns >= $row['turns']) {
+            echo "This will take " . $row['turns'] . " turns, you will earn " . $row['gold'] . " gold.";
+            echo "<br /><br /><div align = right><form><input type = hidden name = activity value = '" . $activity . "'><input type = submit name = action value = 'do it'></form></div>";
+        } else {
+            echo "You dont have enough turns avalible to do this!";
+        }
+    }
 }
 
 

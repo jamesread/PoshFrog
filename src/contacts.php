@@ -1,6 +1,6 @@
 <?php
-/*******************************************************************************
 
+/*******************************************************************************
   Copyright (C) 2004-2006 xconspirisist (xconspirisist@gmail.com)
 
   This file is part of pFrog.
@@ -18,20 +18,19 @@
   You should have received a copy of the GNU General Public License
   along with pFrog; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *******************************************************************************/
 
-*******************************************************************************/
-
-require_once ("includes/common.php");
+require_once "includes/common.php";
 $title = "index";
-require_once ("includes/widgets/header.php");
+require_once "includes/widgets/header.php";
 
 startBox("Advisors", BOX_GREEN);
 
 echo "<ul>";
-popup ("<li>Financial</li>", "advisors.php?advisor=financial");
-popup ("<li>Business</li>", "advisors.php?advisor=business");
-popup ("<li>Rankings</li>", "advisors.php?advisor=rankings");
-popup ("<li>Slaves</li>", "advisors.php?advisor=slaves");
+popup("<li>Financial</li>", "advisors.php?advisor=financial");
+popup("<li>Business</li>", "advisors.php?advisor=business");
+popup("<li>Rankings</li>", "advisors.php?advisor=rankings");
+popup("<li>Slaves</li>", "advisors.php?advisor=slaves");
 echo "</ul>";
 
 stopBox(BOX_GREEN);
@@ -42,7 +41,7 @@ $result = $db->query($sql);
 
 echo "<ul>";
 while ($row = $result->fetchRow()) {
-	echo "<li><a href = viewuser.php?user=" . $row['id'] . ">" . $row['username'] . "</a></li>";
+    echo "<li><a href = viewuser.php?user=" . $row['id'] . ">" . $row['username'] . "</a></li>";
 }
 echo "</ul>";
 
@@ -50,6 +49,4 @@ stopBox(BOX_GREEN);
 
 //echo "Checkout the <a href = leaderboard.php>leaderboard</a>?";
 
-require_once ("includes/widgets/footer.php");
-
-?>
+require_once "includes/widgets/footer.php";
