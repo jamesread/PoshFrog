@@ -6,5 +6,7 @@ The engine was supposed to host a game called "tycoonism", about becoming a tyco
 
 In 2023 I thought it might be amusing to port it to a recent version of PHP, and clean up the code, with the 20 years of coding experience I've developed in the meantime! Allbeit a huge chunk of the code is very legacy. The bulk of it was developed at a time when 56k modems were very common still, XHTMLRequest / AJAX didn't exist, and CSS was version 2 or so.
 
+![screenshot.png](screenshot.png)
+
 This project is GPLv2, see the COPYING file.
 
