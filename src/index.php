@@ -24,21 +24,6 @@ require_once 'includes/common.php';
 $title = "index";
 require_once "includes/widgets/header.php";
 
-use libAllure\Session;
-
-if (Session::isLoggedIn()) {
-    startBox("Hello again!", BOX_GREEN);
-    echo "Welcome back, " . Session::getUser()->getUsername() . ".";
-    stopBox(BOX_GREEN);
-
-    showHint();
-} else {
-    echo "pfrog is a free online role playing game, ( rpg for short ). The objectives of the game are as follows: ";
-    echo "<ul>";
-    echo "<li>Try to become the richest player in the game.</li>";
-    echo "<li>The richer you become, within the smallest time as possible will give you good rankings.</li>";
-    echo "<li>You play as a 'tycoon'. Earn lots of money while you get one up on your fellow players.</li>";
-    echo "</ul>";
-}
+$tpl->display('index.tpl');
 
 require_once "includes/widgets/footer.php";

@@ -44,7 +44,7 @@ while ($row = mysql_fetch_array($result)) {
     $temp = get_userdata($_SESSION['username']);
     $gold = $temp['gold'];
 
-    $turns = get_turns($_SESSION['username']);
+    $turns = getTurns();
 
     if ($gold >= $row['gold']) {
         if ($turns['turns'] >= $row['turns']) {

@@ -37,7 +37,7 @@ if (Session::isLoggedIn()) {
     $tpl->assign('isAdmin', Session::hasPriv('ADMIN'));
     $tpl->assign('user', Session::getUser());
 
-    $turns = getTurns(Session::getUser()->getUsername());
+    $turns = getTurns();
     $gold = number_format(Session::getUser()->getData('gold'));
 
     $tpl->assign('gold', $gold);

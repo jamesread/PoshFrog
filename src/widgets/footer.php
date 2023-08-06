@@ -18,24 +18,13 @@
   You should have received a copy of the GNU General Public License
   along with pFrog; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- *******************************************************************************/
+  *******************************************************************************/
 
-?>
+namespace pfrog;
 
-<br /><br />
-</div> <!-- page !-->
-<div id = "footer">
-<?php
+global $tpl;
 
-global $core;
+$tpl->assign('version', getApplicationVersion());
+$tpl->display('footer.tpl');
 
-popup("Powered by pFrog. ", "help.php?topic=pFrog");
-echo "Version <strong>" . $core->Version . "</strong>. <br />";
-
-?>
-</div>
-
-</body>
-
-</html>
-<?php exit; ?>
+exit;

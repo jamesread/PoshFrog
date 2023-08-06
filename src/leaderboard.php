@@ -29,8 +29,7 @@ $sql = "SELECT `id`, `username`, `registered`, `gold` FROM `users`";
 $result = $db->query($sql);
 
 while ($currentUser = $result->fetchRow()) {
-    $turns = getTurns($currentUser['username']);
-    $ranking = (intval(($turns['total'] * $currentUser['gold']) / 10000));
+    $ranking = (0); // Used to calc getTurns for every user, but that sucks.
 
     $currentUser['ranking'] = $ranking;
 

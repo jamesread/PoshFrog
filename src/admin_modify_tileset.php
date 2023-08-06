@@ -23,14 +23,13 @@
 require_once 'includes/common.php';
 $title = "Modify Tileset";
 require_once 'includes/widgets/mini_header.php';
-require_once 'libAllure/util/shortcuts.php';
+
+use function libAllure\util\san;
 
 if (isset($submit)) {
     $tileset = str_replace(' [image]', '.jpg', $tileset);
     $tileset = str_replace(' ', '_', $tileset);
 }
-
-print_r($_REQUEST);
 
 $row = san()->filterUint('row');
 $col = san()->filterUint('column');
@@ -146,11 +145,11 @@ $sql = "SELECT * FROM `quadrents`";
 $result = $db->query($sql);
 
 while ($exitQuadrent = $result->fetchRow()) {
-    if ($exitQuadrent['name'] == $exitQuadrent['exitQuadrent']) {
-        echo "\t<option selected style = 'background-color: #FF9900;'>" . $extQuadrent['name'] . "</option>\n";
-    } else {
+//    if ($exitQuadrent['name'] == $exitQuadrent['exit_quadrent']) {
+//        echo "\t<option selected style = 'background-color: #FF9900;'>" . $extQuadrent['name'] . "</option>\n";
+//    } else {
         echo "\t<option>" . $exitQuadrent['name'] . "</option>\n";
-    }
+//    }
 }
 echo "</select> \n\n";
 

@@ -20,38 +20,42 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *******************************************************************************/
 
-require_once '../vendor/autoload.php';
-require_once '/etc/pfrog/config.php';
+(@include_once '../vendor/autoload.php') or die('autoload.php not found, you probably need to run "composer update".');
 
-require_once 'includes/functions.php';
+(@include_once '/etc/pFrog/config.php') or die ('config.php not found in /etc/pFrog');
 
+use \libAllure\Session;
 
 \libAllure\ErrorHandler::getInstance()->beGreedy();
 
 $db = new \libAllure\Database('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASS);
 \libAllure\DatabaseFactory::registerInstance($db);
 
+Session::setSessionName('pfrogUser');
+Session::start();
 
-\libAllure\Session::setSessionName('pfrogUser');
-\libAllure\Session::start();
+require_once 'includes/functions.php';
+
+\libAllure\IncludePath::addLibAllure();
+
+require_once 'libAllure/util/shortcuts.php';
 
 define('CFG_PASSWORD_SALT', 'asdf');
 
 date_default_timezone_set('Europe/London');
 
-define('INC_COMMON', true);
-require_once 'core.php';
-
-define('LEVEL_ADMIN', 30);
-
-$backend = new \libAllure\AuthBackendDatabase();
-\libAllure\AuthBackend::setBackend($backend);
+\libAllure\AuthBackend::setBackend(new \libAllure\AuthBackendDatabase());
 
 $breadcrumbs = array();
 $breadcrumbs[] = '<a href = "index.php">index</a>';
 
 $tpl = new \libAllure\Template('pfrog');
+$tpl->assign('isLoggedIn', Session::isLoggedIn());
 
-require_once 'includes/Game.php';
+if (Session::isLoggedIn()) {
+    $tpl->assign('user', Session::getUser());
+}
 
-$game = new Game();
+$game = new \pfrog\Game();
+$core = new \pfrog\Core();
+

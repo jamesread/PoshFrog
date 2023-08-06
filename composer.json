@@ -1,7 +1,7 @@
 {
 	"autoload": {
 		"psr-4": {
-			"pfrog\\": "src/includes/"
+			"pfrog\\": "src/includes/app/"
 		}
 	},
     "require-dev": {

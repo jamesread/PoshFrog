@@ -24,6 +24,11 @@ require_once "includes/common.php";
 $title = "shop";
 require_once "includes/widgets/header.php";
 
+use pfrog\ContentGenerator;
+
+$generator = new ContentGenerator();
+$generator->generate();
+
 startBox("Welcome to the shop", BOX_YELLOW);
 echo "Welcome to the shop. What can we get you?<br />";
 echo "<a href = \"?mode=business\">business</a> | ";

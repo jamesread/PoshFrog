@@ -65,7 +65,7 @@ $sql = "SELECT `tileset`, `traversable`, row, col FROM `map` WHERE `quadrent` = 
 $result = $db->query($sql);
 
 if ($result->numRows() == 0) {
-    throw new Exception('No cells found for quadrent:' . $quadrent);
+//    throw new Exception('No cells found for quadrent:' . $quadrent);
 }
 
 function getCell($row, $column)
@@ -220,7 +220,7 @@ if ($row_result) {
 ?>
 </fieldset></div>
 <br clear = all / >
-<?
+<?php
 
 require_once ("includes/widgets/footer.php");
 

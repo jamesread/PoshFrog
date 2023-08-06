@@ -63,7 +63,7 @@ switch ($advisor) {
         break;
 
     case 'rankings':
-        $turns = get_turns($_SESSION['username']);
+        $turns = getTurns();
         $rank = (intval(($turns['total_turns'] * $user->getData('gold')) / 10000));
 
         if ($rank <= 20) {

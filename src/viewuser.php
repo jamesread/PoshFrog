@@ -22,6 +22,8 @@
 
 require_once "includes/common.php";
 
+use libAllure\Session;
+
 if (isset($_GET['transfer'])) {
     $sql = "UPDATE `users` SET `gold` = (`gold` + '" . $_GET['transfer'] . "' ) WHERE `username` = '" . $_GET['user'] . "' ";
     $result = db_query($sql);
@@ -47,9 +49,6 @@ if ($result->numRows() == 0) {
 while ($row = $result->fetchRow()) {
     startBox($row['username'], BOX_GREEN);
     echo "<strong>Gold:</strong> " . $row['gold'] . "<br />";
-    $temp = get_turns($row['username']);
-    $total_turns = intval($temp['total_turns']);
-    echo "<strong>Total Turns</strong>: $total_turns <br/>";
     echo "<strong>Slaves owned</strong>";
     $result2 = $db->query("SELECT * FROM slaves WHERE owner = '" . $row['username'] . "'");
 
@@ -63,14 +62,12 @@ while ($row = $result->fetchRow()) {
     }
     echo "</ul>";
 
-    $ranking = (intval(($total_turns * $row['gold']) / 10000));
-    popup("<strong>Player Ranking</strong>: ", "help.php?topic=rankings");
-    echo $ranking;
+    popup("<strong>Player Ranking</strong>: ?", "help.php?topic=rankings");
 }
 
 stopBox(BOX_GREEN);
 
-if ($_SESSION['username'] != $_GET['user']) {
+if (Session::getUser()->getUsername() != $_GET['user']) {
     ?>
 <form action = "viewuser.php">
 <input type = "hidden" name = "user" value = "<?php echo $_GET['user']; ?>" />
@@ -88,6 +85,9 @@ if ($_SESSION['username'] != $_GET['user']) {
 </form>
     <?php
 }
+
+$tpl->assign('viewUser', $_GET['user']);
+$tpl->display('viewUser.tpl');
 
 require_once "includes/widgets/footer.php";
 

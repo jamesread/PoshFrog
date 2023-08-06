@@ -20,9 +20,7 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *******************************************************************************/
 
-if (!defined('INC_COMMON')) {
-    die("Cannot include includes/core.php directly. Use includes/common.php.");
-}
+namespace pfrog;
 
 /**
  * The Core class.
@@ -48,31 +46,7 @@ class Core
      */
     function __construct()
     {
-        if (file_exists('VERSION')) {
-            $this->Version = trim(file_get_contents('VERSION'));
-        } else {
-            $this->Version = '?';
-        }
     }
-
-    public function error($e)
-    {
-        $this->errorMessage($e);
-    }
-
-    public function errorMessage($error)
-    {
-        throw new Exception($error);
-    }
-
-    /**
-     * Displays a message suggesting the user register/login.
-     */
-    function registrationAdvice($benifits)
-    {
-        echo "\n\n" . '<div class = "information">If you were <a href = "login.php">logged in</a>, you could <strong>' . $benifits . '</strong>. If you don\'t have an account, you could <a href = "register.php">register</a> for free.</div>';
-    }
-
 
     /**
      * A simple function that encapsulates parameters into a link, which
@@ -177,17 +151,5 @@ class Core
         }
     }
 
-    function fieldsetTitle($text)
-    {
-        echo '<img src = "includes/fieldsetTitleGenerator.php?text=' . $text . '" alt = "' . $text . '" title = "' . $text . '" />';
-    }
 }
 
-/**
- * An instantiation of the Core class.
- *
- * @global core $core
- * @name   $core
- */
-$core = new Core();
-?>

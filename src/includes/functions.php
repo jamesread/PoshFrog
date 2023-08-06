@@ -39,12 +39,7 @@ function gud($key)
     return Session::getUser()->getData($key);
 }
 
-function get_turns($username)
-{
-    return getTurns($username);
-}
-
-function getTurns($username)
+function getTurns()
 {
     $waitTimePerTurn = 100;
 
@@ -55,18 +50,8 @@ function getTurns($username)
         'remaining' => null
     );
 
-    if ($username == Session::getUser()->getUsername()) {
-        $registerd = Session::getUser()->getData('registered');
-        $registerd = 0;
-    } else {
-        global $db;
-
-        $sql = 'SELECT `usedturns`, unix_timestamp(`registerd`) as registerd FROM `pfrog_users` WHERE "' . $username . '" LIMIT 1 ';
-        $result = $db->query($sql);
-        $result = $result->fetchRow();
-        $registerd = $result['registerd'];
-        $turns['used'] = $result['usedTurns'];
-    }
+    $registerd = Session::getUser()->getData('registered');
+    $registerd = strtotime($registerd);
 
     $now = time();
     $timelapse = ($now - $registerd);
@@ -194,4 +179,13 @@ function adjustUserGold(int $currentAccount, int $bankAccount = 0)
 
     Session::getUser()->getData('gold', false);
 //    Session::getUser()->getData('bankGold', false);
+}
+
+function getApplicationVersion(): string 
+{
+    if (file_exists('VERSION')) {
+        return trim(file_get_contents('VERSION'));
+    } else {
+        return '?';
+    }
 }

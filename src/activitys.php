@@ -27,13 +27,15 @@ require_once "includes/widgets/header.php";
 $sql = "SELECT * FROM activitys";
 $result = $db->query($sql);
 
-startBox("Activities", BOX_GREEN);
+$activities = $result->fetchAll();
+
+$tpl->assign('activities', $activities);
+$tpl->display('activities.tpl');
 
 echo "<ul>";
 while ($activity = $result->fetchRow()) {
     popup("<li>" . $activity['name'] . "</li>", "do_activity.php?activity=" . $activity['name']);
 }
 echo "</ul>";
-stopBox(BOX_GREEN);
 
 require_once "includes/widgets/footer.php";

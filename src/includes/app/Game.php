@@ -1,5 +1,7 @@
 <?php
 
+namespace pfrog;
+
 use libAllure\DatabaseFactory;
 
 class Game
