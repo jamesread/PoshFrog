@@ -28,6 +28,7 @@ define('BOX_NULL', "");
 
 use libAllure\DatabaseFactory;
 use libAllure\Session;
+use libAllure\Shortcuts as LA;
 
 function getProgramName()
 {
@@ -77,7 +78,7 @@ function getTurns()
 
 function popup($text, $url)
 {
-    echo "<a href=\"#\" onclick=\"return popitup('$url')\">$text</a>";
+    echo "<a href=\"#\" onclick=\"return popitup('$url&popup=true;')\">$text</a>";
 }
 
 function infobox($content)
@@ -168,6 +169,11 @@ function showHint()
     }
 }
 
+function getGold() 
+{
+    return intval(gud('gold'));
+}
+
 function adjustUserGold(int $currentAccount, int $bankAccount = 0)
 {
     $sql = 'UPDATE users SET gold = (gold + :current), bankGold = (bankGold + :bank) WHERE id = :user';
@@ -188,4 +194,42 @@ function getApplicationVersion(): string
     } else {
         return '?';
     }
+}
+
+function getAllowedValueOrDefault(&$v, $default, array $itemTypes) 
+{
+    if (!isset($v) || (!in_array($v, $itemTypes))) {
+        return $default;
+    }
+
+    return $v;
+}
+
+function formatGold($count)
+{
+    return '<img src = "resources/images/gold.png" /> ' . $count;
+}
+
+function getOwnedEntities() 
+{
+    $sql = 'SELECT e.* FROM entities e WHERE e.owner = :owner';
+    $stmt = LA::stmt($sql);
+    $stmt->execute([
+        'owner' => Session::getUser()->getId()
+    ]);
+
+    return $stmt->fetchAll();
+}
+
+function getPlayerLocation()
+{
+    $location = gud('location');
+
+    if ($location == null) {
+        $location = [1, 1];
+    } else {
+        $location = explode(".", $location);
+    }
+
+    return $location;
 }

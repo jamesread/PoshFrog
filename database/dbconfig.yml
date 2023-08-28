@@ -1,4 +1,4 @@
 development:
   dialect: mysql
-  datasource: user:${DB_PASSWORD}@tcp(localhost)/pFrog?parseTime=true
+  datasource: user:${DB_PASSWORD}@tcp(mysql)/pFrog?parseTime=true
   dir: mysql

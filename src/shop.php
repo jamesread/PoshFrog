@@ -25,50 +25,32 @@ $title = "shop";
 require_once "includes/widgets/header.php";
 
 use pfrog\ContentGenerator;
+use function libAllure\util\stmt;
 
 $generator = new ContentGenerator();
 $generator->generate();
 
-startBox("Welcome to the shop", BOX_YELLOW);
-echo "Welcome to the shop. What can we get you?<br />";
-echo "<a href = \"?mode=business\">business</a> | ";
-echo "<a href = \"?mode=slaves\">slaves</a> | ";
-echo "<a href = \"?mode=accessories\">accessories</a>";
-stopBox(BOX_YELLOW);
+$entityTypes = ['business', 'worker', 'accessory'];
+$entityType = getAllowedValueOrDefault($_GET['mode'], 'worker', $entityTypes);
 
-use libAllure\DatabaseFactory;
+function getEntitiesForSale($type) 
+{
+    $sql = 'SELECT * FROM `entities` WHERE `owner` is null AND `type` = :type';
+    $stmt = stmt($sql);
+    $stmt->execute([
+        'type' => $type,
+    ]);
 
-$display = [
-    'business' => false,
-    'slaves' => false,
-    'accessories' => false,
-];
-
-if (isset($_GET['mode'])) {
-    if (isset($display[$_GET['mode']])) {
-        $display[$_GET['mode']] = true;
-    }
+    return $stmt->fetchAll();
 }
 
-if ($display['business']) {
-    startBox("Business", BOX_GREEN);
+$tpl->assign('entityTypes', $entityTypes);
+$tpl->assign('entityType', $entityType);
+$tpl->assign('items', getEntitiesForSale($entityType));
+$tpl->display('shop.tpl');
 
-    $sql = 'SELECT * FROM `shop` WHERE `type` = "BUSINESS"';
-    $stmt = DatabaseFactory::getInstance()->prepare($sql);
-    $stmt->execute();
 
-    echo "<ul>\n";
-    if ($stmt->numRows() == 0) {
-        echo "\t<li>Sorry, no bussinesses are available on the market.</li>\n";
-    } else {
-        while ($row = mysql_fetch_array($result)) {
-            popup("\t<li>" . $row['name'] . "</li>\n", "shop_item.php?item=" . $row['name']);
-        }
-    }
-    echo "</ul>\n";
-    stopBox(BOX_RED);
-}
-
+/*
 if ($display['slaves']) {
     startBox("Slaves", BOX_GREEN);
 
@@ -109,11 +91,13 @@ if ($display['accessories']) {
         startBox("Accessories", BOX_GREEN);
         echo "<ul>\n";
         while ($row = mysql_fetch_array($result)) {
-            popup("\t<li>" . $row['name'] . "</li>\n", "shop_item.php?item=" . $row['name']);
+            popup("\t<li>" . $row['name'] . "</li>\n", "shop_entity.php?item=" . $row['name']);
         }
     }
     echo "</ul>\n";
     stopBox(BOX_GREEN);
 }
+ */
 
+$showClose = true;
 require_once "includes/widgets/footer.php";

@@ -25,6 +25,9 @@ require_once 'includes/widgets/header.minimal.php';
 
 $advisor = $_GET['advisor'];
 
+use libAllure\Session;
+use function libAllure\util\stmt;
+
 echo "<strong>$advisor advisor</strong><hr>";
 switch ($advisor) {
     case 'slaves':
@@ -39,13 +42,17 @@ switch ($advisor) {
         break;
 
     case 'business':
-        $result = $db->query("SELECT * FROM inventory WHERE owner = '" . $_SESSION['username'] . "' AND type = 'BUSINESS'");
+        $sql = 'SELECT * FROM entities WHERE owner = :uid AND type = "BUSINESS"';
+        $stmt = stmt($sql);
+        $stmt->execute([
+            'uid' => Session::getUser()->getId(),
+        ]);
 
-        if ($result->numRows() <= 0) {
+        if ($stmt->numRows() <= 0) {
             echo "You've no businesses! Go to the shop, and buy some to start making money!";
             echo "<br /><br /><strong>Overall</strong>: Bad";
         } else {
-            echo "You have </strong>" . count_rows($result) . "</strong> businsesses, nice going.";
+            echo "You have </strong>" . $stmt->numRows() . "</strong> businsesses, nice going.";
             echo "<br /><br /><strong>Overall</strong>: Good";
         }
 
@@ -81,8 +88,4 @@ switch ($advisor) {
         break;
 }
 
-?>
-
-<br /><br />
-<a href = "javascript:window.close()">Close window</a>
-</body>
+require_once 'includes/widgets/footer.php';

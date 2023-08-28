@@ -22,16 +22,6 @@
 
 namespace pfrog;
 
-/**
- * The Core class.
- *
- * Provides functions for general management, time formatting, etc.
- *
- * @package CommonClasses
- * @author  James Read <xconspirisist@gmail.com>
- * @license CCPL
- * @link    http://www.jwread.com
- */
 class Core
 {
     /**

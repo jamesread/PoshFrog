@@ -22,34 +22,30 @@
 		logged in as <strong><a href = "viewuser.php?user={$user->getID()}" \>{$user->getUsername()}</a></strong>.
 	</div>
     
-	<ul style = "grid-area: 'shop'">
-			<li><h3>Main</h3></li>
+	<ul style = "grid-area: 'shop'; justify-self: right; text-align: right;">
 			{if $isAdmin}
 			<li>
 			</li>
 			{/if}
+			<li><a href="shop.php">shop</a></li>
 			<li><a href="leaderboard.php">leaderboard</a></li>
-			<li><a href="quadrants.php">quadrents</a></li>
              <li><a href="contacts.php">contacts</a></li>
-			<li><a href="activitys.php">activities</a></li>
 	</ul>
 
 	<ul style = "grid-area: finance">
-			<li><h3>Financial</h3></li>
-			<li><a href="bank.php">bank</a></li>
-			<li><a href="shop.php">shop</a></li>
-			<li><a href="slaves.php">slaves</a></li>
-			<li><a href="business.php">business</a></li>
+			<li><a href="status.php">status</a></li>
+			<li><a href="activitys.php">activities</a></li>
+			<li><a href="map.php">map</a></li>
 	</ul>
 </header>
 
 <p class = "status">
-<span class = "metric"><strong><img src = "resources/images/gold.png" />{$gold}</strong></span>
+<span class = "metric"><strong><img src = "resources/images/gold.png" /><a href = "bank.php">{$gold}</a></strong></span>
 <span class = "metric"><strong><img src = "resources/images/turn.png" />{$turns.remaining}</strong></span>
 <span class = "metric"><strong><img src = "resources/images/time.png" />{$turns.time}</strong></span>
 </p>
 {else}
-	<div class = "grid-area: 'session'">
+	<div style = "grid-area: 'session'; justify-self: right;">
 		<a href = "login.php">login</a> |
 		<a href = "register.php">register</a> 
 	</div>

@@ -23,47 +23,71 @@
 require_once "includes/common.php";
 
 use libAllure\Session;
+use libAllure\Sanitizer;
+use libAllure\DatabaseFactory;
 
-if (isset($_GET['transfer'])) {
-    $sql = "UPDATE `users` SET `gold` = (`gold` + '" . $_GET['transfer'] . "' ) WHERE `username` = '" . $_GET['user'] . "' ";
-    $result = db_query($sql);
+$san = Sanitizer::getInstance();
 
-    $sql = "UPDATE `users` SET `gold` = (`gold` - '" . $_GET['transfer'] . "' ) WHERE `username` = '" . $_SESSION['username'] . "' ";
-    $result = db_query($sql);
+function transferGoldToPlayer($recipient, $amount) {
+    $sql = "UPDATE `users` SET `gold` = (`gold` + :adjust) WHERE `username` = :username ";
+    $stmt = DatabaseFactory::getInstance()->prepare($sql);
+    $stmt->execute([
+        ':adjust' => $amount,
+        ':username' => $recipient,
+    ]);
 
-    echo mysql_error();
 
-    redirect("Money transfered", "viewuser.php?user=" . $_GET['user']);
+    $sql = "UPDATE `users` SET `gold` = (`gold` - :amount) WHERE `uid` = :uid ";
+    $stmt = DatabaseFactory::getInstance()->prepare($sql);
+    $stmt->execute([
+        ':adjust' => $amount,
+        ':uid' => Session::getUser()->getId(),
+    ]);
+
+    redirect("Money transfered", "viewuser.php?user=" . $recipient);
+
+}
+
+if ($san->hasInput('transfer')) {
+    transferGoldToPlayer($san->filterString('recipient'), $san->filterUint('amount'));
 }
 
 $title = "index";
 require_once "includes/widgets/header.php";
 
-$sql = 'SELECT * FROM `users` WHERE `id` = "' . $_REQUEST['user'] . '" LIMIT 1';
-$result = $db->query($sql);
+function getUser($id) {
+    $sql = 'SELECT * FROM `users` WHERE `id` = :id LIMIT 1';
+    $stmt = DatabaseFactory::getInstance()->prepare($sql);
+    $stmt->execute([
+        'id' => $id,
+    ]);
 
-if ($result->numRows() == 0) {
-    $tpl->error("User not found.");
+    if ($stmt->numRows() == 0) {
+        $tpl->error("User not found.");
+    }
+
+    return $stmt->fetchRow();
 }
 
-while ($row = $result->fetchRow()) {
+$row = getUser(Sanitizer::getInstance()->filterUint('user'));
+
     startBox($row['username'], BOX_GREEN);
     echo "<strong>Gold:</strong> " . $row['gold'] . "<br />";
-    echo "<strong>Slaves owned</strong>";
-    $result2 = $db->query("SELECT * FROM slaves WHERE owner = '" . $row['username'] . "'");
+    echo "<strong>Entities owned</strong>";
 
-    echo "<ul>";
-    if ($result2->numRows() == 0) {
+    $entities = getOwnedEntities();
+
+    if (empty($entities)) {
         echo "<li>No slaves owned.</li>";
     } else {
-        while ($row2 = mysql_fetch_array($result2)) {
-            popup("<li>" . $row2['name'] . "</li>", "view_slave.php?slave= " . $row2['name']);
+        echo "<ul>";
+        foreach($entities as $entity) {
+            popup("<li>" . $entity['name'] . "</li>", "view_worker.php?slave= " . $entity['name']);
         }
+        echo "</ul>";
     }
-    echo "</ul>";
 
     popup("<strong>Player Ranking</strong>: ?", "help.php?topic=rankings");
-}
 
 stopBox(BOX_GREEN);
 

@@ -26,4 +26,11 @@ require_once "includes/widgets/header.php";
 
 $tpl->display('index.tpl');
 
-require_once "includes/widgets/footer.php";
+use libAllure\Session;
+
+if (Session::isLoggedIn()) {
+    require_once 'status.php';
+} else {
+    require_once "includes/widgets/footer.php";
+}
+

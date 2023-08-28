@@ -24,6 +24,8 @@ require_once 'includes/common.php';
 
 use libAllure\Session;
 
+ob_start();
+
 if (!isset($title)) {
     $title = 'Untitled page';
 }
@@ -38,7 +40,9 @@ if (Session::isLoggedIn()) {
     $tpl->assign('user', Session::getUser());
 
     $turns = getTurns();
-    $gold = number_format(Session::getUser()->getData('gold'));
+    $gold = number_format(gud('gold'));
+
+    $game->stepTurns();
 
     $tpl->assign('gold', $gold);
     $tpl->assign('turns', $turns);

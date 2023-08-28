@@ -34,8 +34,7 @@ h3 {
   padding: 1em;
   background-color: #333; 
   border-radius: 1em;
-  margin-left: -1em;
-  margin-right: -1em;
+  margin-bottom: 2em;
 }
   .box h2 {
     text-transform: uppercase;
@@ -86,7 +85,8 @@ div.page {
 }
 
 table {
-  width: 100%; }
+  width: 100%; 
+}
 
 table.normal th, table.normal tr, table.normal td {
   background-color: #333; }
@@ -96,11 +96,38 @@ table.normal th, table.normal td {
 table.normal tr:hover td, table.normal th:hover {
   background-color: black; }
 
+table.map {
+  width: auto;
+  margin: auto;
+  background-color: black;
+}
+
 table.map td {
-  border: 1px solid black; }
+  border: 1px solid black; 
+  padding: 0;
+  margin: 0;
+  line-height: 1px;
+  text-align: center;
+}
+
+table.map td img {
+  margin: 0;
+  padding: 0;
+}
 
 table.map td:hover {
-  border: 1px solid orange; }
+  border: 1px solid orange; 
+}
+
+table.map a:hover {
+  background-color: transparent;
+  text-decoration: none;
+}
+
+table.map td.selected, strong.selected {
+  border: 1px solid red;
+  color: red;
+}
 
 fieldset {
   border: none;
@@ -126,4 +153,14 @@ button {
   color: white;
   text-transform: uppercase;
   font-weight: bold;
+}
+
+form {
+  display: grid;
+  gap: 1em;
+  grid-template-columns: min-content min-content;
+}
+
+footer {
+  text-align: center;
 }
