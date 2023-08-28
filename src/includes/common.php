@@ -22,15 +22,17 @@
 
 (@include_once '../vendor/autoload.php') or die('autoload.php not found, you probably need to run "composer update".');
 
-(@include_once '/etc/pFrog/config.php') or die ('config.php not found in /etc/pFrog');
-
-use \libAllure\Session;
+$cfg = new \libAllure\ConfigFile();
+$cfg->tryLoad([
+    '/etc/pFrog/',
+]);
 
 \libAllure\ErrorHandler::getInstance()->beGreedy();
 
-$db = new \libAllure\Database('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASS);
+$db = new \libAllure\Database($cfg->getDsn(), $cfg->get('DB_USER'), $cfg->get('DB_PASS'));
 \libAllure\DatabaseFactory::registerInstance($db);
 
+use \libAllure\Session;
 Session::setSessionName('pfrogUser');
 Session::start();
 
