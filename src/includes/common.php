@@ -38,10 +38,6 @@ Session::start();
 
 require_once 'includes/functions.php';
 
-\libAllure\IncludePath::addLibAllure();
-
-require_once 'libAllure/util/shortcuts.php';
-
 define('CFG_PASSWORD_SALT', 'asdf');
 
 date_default_timezone_set('Europe/London');
@@ -52,6 +48,7 @@ $breadcrumbs = array();
 $breadcrumbs[] = '<a href = "index.php">index</a>';
 
 $tpl = new \libAllure\Template('pfrog');
+$tpl->registerModifier('formatGold', 'formatGold');
 $tpl->assign('isLoggedIn', Session::isLoggedIn());
 
 if (Session::isLoggedIn()) {

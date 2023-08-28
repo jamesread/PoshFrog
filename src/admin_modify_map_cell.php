@@ -18,97 +18,93 @@
   You should have received a copy of the GNU General Public License
   along with pFrog; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- *******************************************************************************/
+*******************************************************************************/
 
 require_once 'includes/common.php';
 $title = "Modify Tileset";
 require_once 'includes/widgets/mini_header.php';
 
-use function libAllure\util\san;
+use \libAllure\DatabaseFactory;
 
-if (isset($submit)) {
-    $tileset = str_replace(' [image]', '.jpg', $tileset);
-    $tileset = str_replace(' ', '_', $tileset);
-}
+$san = new libAllure\Sanitizer();
 
-$row = san()->filterUint('row');
-$col = san()->filterUint('column');
-$quadrent = san()->filterString('quadrent');
+$row = $san->filterUint('row');
+$col = $san->filterUint('col');
+$quadrent = $san->filterString('quadrent');
 
-function getCell($quadrant, $row, $col)
+function getCell($quadrent, $row, $col)
 {
-    global $db;
-
-    // get info about cell
-    $sql = 'SELECT * FROM `map` WHERE `quadrent` = :quadrant AND row = :row AND col = :col LIMIT 1';
-    $stmt = $db->prepare($sql);
-    $stmt->bindValue(':quadrant', $quadrant);
-    $stmt->bindValue(':row', $row);
-    $stmt->bindValue(':col', $col);
-    $stmt->execute();
+    $sql = 'SELECT * FROM `map` WHERE `quadrent` = :quadrent AND row = :row AND col = :col LIMIT 1';
+    $stmt = DatabaseFactory::getInstance()->prepare($sql);
+    $stmt->execute([
+        ':row' => $row,
+        ':col' => $col,
+        ':quadrent' => $quadrent,
+    ]);
 
     $cell = $stmt->fetchRow();
 
     if (empty($cell)) {
-        return array (
-        'tileset' => null,
-        'traversable' => false,
-        'exit' => null,
-        'exit_quadrent' => null,
-        'newCell' => true,
-        );
-    } else {
-        return $cell;
+        $sql = 'INSERT INTO `map` (quadrent, row, col) VALUES (:quadrent, :row, :col)';
+        $stmt = DatabaseFactory::getInstance()->prepare($sql);
+        $stmt->execute([
+            ':row' => $row,
+            ':col' => $col,
+            ':quadrent' => $quadrent,
+        ]);
+
+        return getCell($quadrent, $row, $col);
     }
+
+    return $cell;
 }
 
 $cell = getCell($quadrent, $row, $col);
 
-$tileset = $cell['tileset'];
-$exit = $cell['exit'];
-$exit_to = $cell['exit_quadrent'];
-$traversable = $cell['traversable'];
-
 if (isset($_REQUEST['submit'])) {
-    if (isset($cell['newCell'])) {
-        $sql = "INSERT INTO `map` (row, col, `quadrent`, `tileset`, `exit`, `exit_quadrent` ) VALUES (:row, :col, '$quadrent', '$tileset', '$exit', '$exit_to' )";
-        $stmt = $db->prepare($sql);
-        $stmt->bindValue(':row', $row);
-        $stmt->bindValue(':col', $col);
-        $stmt->execute();
-        die("done insert");
-    } else {
-        $sql = "UPDATE `map` SET `exit_quadrent` = '$exit_to', `exit` = '$exit', `tileset` = '" . $tileset . "', `traversable` = '" . $traversable . "' WHERE `quadrent` = '" . $quadrent . "' AND `row` = '" . $row . "' AND col = '" . $col . "' LIMIT 1";
-        $result = $db->query($sql);
-        die("done update");
-    }
+    $sql = 'UPDATE `map` SET `tileset` = :tileset, `exit` = :exit, `exit_quadrent` = :exit_to WHERE quadrent = :quadrent AND row = :row AND col = :col';
+    $stmt = $db->prepare($sql);
+    $stmt->execute([
+        ':row' => $row,
+        ':col' => $col,
+        ':quadrent' => $quadrent,
+        ':tileset' => $san->filterString('tileset'),
+        ':exit' => $san->filterString('exit'),
+        ':exit_to' => $san->filterString('exit_to'),
+    ]);
 }
 
 echo "<strong>Co-ordinates</strong>: " . $row . "." . $col . "<br />";
 
 echo "<form>";
-// tileset
 echo "tileset <select name = tileset>\n\n";
 
-$tiles = scandir('resources/images/tilesets/');
-unset($tiles[0]);
-unset($tiles[1]);
-foreach ($tiles as $key => $name) {
-    if ($name != "." && $name != "..") {
-        $name = str_replace('_', ' ', $name);
-        $name = str_replace('.jpg', ' [image]', $name);
+function getTiles(): array
+{
+    $tiles = [];
+    $files = scandir('resources/images/tilesets/');
+
+    foreach ($files as $name) {
+        if ($name == "." || $name == "..") {
+            continue;
+        }
+
+        $caption = str_replace('_', ' ', $name);
+        $caption = str_replace('.jpg', ' [image]', $caption);
+
+        $tiles[$name] = $caption;
     }
 
-    $tiles[$key] = $name;
+    ksort($tiles);
+
+    return $tiles;
 }
 
-sort($tiles);
-
-foreach ($tiles as $name) {
+foreach (getTiles() as $key => $name) {
     if ($name == $cell['tileset']) {
         echo "\t<option selected style = 'background-color: #FF9900;'>" . $name . "</option>\n";
     } else {
-        echo "\t<option>" . $name . "</option>\n";
+        echo "\t<option value = \"$key\">" . $name . "</option>\n";
     }
 }
 
@@ -145,11 +141,11 @@ $sql = "SELECT * FROM `quadrents`";
 $result = $db->query($sql);
 
 while ($exitQuadrent = $result->fetchRow()) {
-//    if ($exitQuadrent['name'] == $exitQuadrent['exit_quadrent']) {
-//        echo "\t<option selected style = 'background-color: #FF9900;'>" . $extQuadrent['name'] . "</option>\n";
-//    } else {
-        echo "\t<option>" . $exitQuadrent['name'] . "</option>\n";
-//    }
+    //    if ($exitQuadrent['name'] == $exitQuadrent['exit_quadrent']) {
+    //        echo "\t<option selected style = 'background-color: #FF9900;'>" . $extQuadrent['name'] . "</option>\n";
+    //    } else {
+    echo "\t<option>" . $exitQuadrent['name'] . "</option>\n";
+    //    }
 }
 echo "</select> \n\n";
 
@@ -161,7 +157,7 @@ echo "<br /><br />";
 echo "\n\n", '<input name = "quadrent" type = "hidden" value = "', $quadrent, '">', "\n\n";
 // co ordinates
 echo '<input type = "hidden" name = "row" value = "', $row, '">';
-echo '<input type = "hidden" name = "column" value = "', $col, '">';
+echo '<input type = "hidden" name = "col" value = "', $col, '">';
 // submit
 echo '<input type = "submit" name = "submit" value = "save">';
 echo '</form>';

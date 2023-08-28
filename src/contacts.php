@@ -20,18 +20,11 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *******************************************************************************/
 
-require_once "includes/common.php";
 $title = "index";
 require_once "includes/widgets/header.php";
 
-startBox("Advisors", BOX_GREEN);
+$tpl->display('contacts.tpl');
 
-echo "<ul>";
-popup("<li>Financial</li>", "advisors.php?advisor=financial");
-popup("<li>Business</li>", "advisors.php?advisor=business");
-popup("<li>Rankings</li>", "advisors.php?advisor=rankings");
-popup("<li>Slaves</li>", "advisors.php?advisor=slaves");
-echo "</ul>";
 
 stopBox(BOX_GREEN);
 startBox("Other Players...", BOX_GREEN);

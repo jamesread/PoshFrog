@@ -29,6 +29,10 @@ $result = $db->query($sql);
 
 $activities = $result->fetchAll();
 
+foreach ($activities as $key => $val) {
+    $activities[$key]['url'] = 'do_activity.php?id=' . $val['id'];
+}
+
 $tpl->assign('activities', $activities);
 $tpl->display('activities.tpl');
 

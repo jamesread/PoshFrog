@@ -31,4 +31,25 @@ class Game
     //        throw new Exception('Tried to access game setting "' . $key . '", which does not exist.');
         }
     }
+
+    public function getResourceNames()
+    {
+        return ['gold'];
+    }
+
+    public function getItemTypes() 
+    {
+        return ['business', 'worker', 'accessory'];
+    }
+
+    public function stepTurns() 
+    {
+        $goldPerTurn = 1;
+
+        $lastTurn = strtotime(gud('lastStep'));
+        $now = strtotime('now');
+
+        var_dump($lastTurn, $now, $now - $lastTurn);
+
+    }
 }

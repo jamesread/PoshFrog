@@ -1,7 +1,9 @@
 {startBox('Activities', BOX_GREEN)}
 
+<ul>
 {foreach from = $activities item = activity}
-	{popup($activity.name, $activity.url)}
+	<li>{popup($activity.name, $activity.url)}</li>
 {/foreach}
+</ul>
 
 {stopBox(BOX_GREEN)}

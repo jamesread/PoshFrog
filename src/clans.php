@@ -29,7 +29,7 @@ if (isset($_GET['clan'])) {
     $clan = $restlt->fetchAll();
 
     if ($clan['password'] == md5($_GET['password'])) {
-        $sql = "UPDATE `tycoonism_users` SET `clan` = '" . $clan['name'] . "' WHERE `username` = '" . $_SESSION['username'] . "'";
+        $sql = "UPDATE `users` SET `clan` = '" . $clan['name'] . "' WHERE `username` = '" . $_SESSION['username'] . "'";
         $result = db_query($sql);
         redirect("Clan Joined.", "clans.php");
     } else {

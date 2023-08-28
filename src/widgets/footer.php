@@ -25,6 +25,11 @@ namespace pfrog;
 global $tpl;
 
 $tpl->assign('version', getApplicationVersion());
+
+$tpl->assign('isPopup', isset($_REQUEST['popup']) || isset($showClose));
+
 $tpl->display('footer.tpl');
+ob_end_flush();
 
 exit;
+
