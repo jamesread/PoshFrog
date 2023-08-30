@@ -46,10 +46,13 @@ class Game
     {
         $goldPerTurn = 1;
 
-        $lastTurn = strtotime(gud('lastStep'));
-        $now = strtotime('now');
+        $lastTurn = date_create(gud('lastStep'));
+        $lastTurn->setTimezone(new \DateTimezone('UTC'));
+        $lastTurn = $lastTurn->getTimestamp();
+        $now = time();
 
-        var_dump($lastTurn, $now, $now - $lastTurn);
+        $diff = $now - $lastTurn;
 
+        var_dump($lastTurn, $now, $diff);
     }
 }
