@@ -22,7 +22,7 @@
 
 require_once 'includes/common.php';
 
-$title = "index";
+$title = "leaderboard";
 require_once "includes/widgets/header.php";
 
 $sql = "SELECT `id`, `username`, `registered`, `gold` FROM `users`";

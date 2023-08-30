@@ -50,6 +50,5 @@ class Game
         $now = strtotime('now');
 
         var_dump($lastTurn, $now, $now - $lastTurn);
-
     }
 }

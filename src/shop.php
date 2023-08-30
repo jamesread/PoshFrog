@@ -25,7 +25,7 @@ $title = "shop";
 require_once "includes/widgets/header.php";
 
 use pfrog\ContentGenerator;
-use function libAllure\util\stmt;
+use libAllure\DatabaseFactory;
 
 $generator = new ContentGenerator();
 $generator->generate();
@@ -36,7 +36,7 @@ $entityType = getAllowedValueOrDefault($_GET['mode'], 'worker', $entityTypes);
 function getEntitiesForSale($type) 
 {
     $sql = 'SELECT * FROM `entities` WHERE `owner` is null AND `type` = :type';
-    $stmt = stmt($sql);
+    $stmt = DatabaseFactory::getInstance()->prepare($sql);
     $stmt->execute([
         'type' => $type,
     ]);
