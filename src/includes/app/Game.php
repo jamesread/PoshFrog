@@ -54,5 +54,6 @@ class Game
         $diff = $now - $lastTurn;
 
         var_dump($lastTurn, $now, $diff);
+        var_dump($lastTurn, $now, $now - $lastTurn);
     }
 }

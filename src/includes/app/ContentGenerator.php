@@ -2,8 +2,7 @@
 
 namespace pfrog;
 
-use function libAllure\util\db;
-use function libAllure\util\stmt;
+use libAllure\DatabaseFactory;
 
 class ContentGenerator {
     public function generate() 
@@ -26,7 +25,7 @@ class ContentGenerator {
         $randomName = trim($list[$randomKey]);
 
         $sql = 'INSERT INTO entities (type, name, gold) VALUES (:type, :name, :gold)';
-        $stmt = stmt($sql);
+        $stmt = DatabaseFactory::getInstance()->prepare($sql);
         $stmt->execute([
             'type' => $type,
             'name' => $randomName,
@@ -55,7 +54,7 @@ class ContentGenerator {
     private function getCount(string $type) 
     {
         $sql = 'SELECT count(id) AS count FROM entities WHERE type = :type';
-        $stmt = db()->prepare($sql);
+        $stmt = DatabaseFactory::getInstance()->prepare($sql);
         $stmt->bindValue(':type', $type);
         $stmt->execute();
 

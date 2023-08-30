@@ -21,7 +21,7 @@
  *******************************************************************************/
 
 require_once "includes/common.php";
-$title = "slaves";
+$title = "activities";
 require_once "includes/widgets/header.php";
 
 $sql = "SELECT * FROM activitys";
