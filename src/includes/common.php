@@ -49,6 +49,9 @@ $breadcrumbs[] = '<a href = "index.php">index</a>';
 
 $tpl = new \libAllure\Template('pfrog');
 $tpl->registerModifier('formatGold', 'formatGold');
+$tpl->registerModifier('startBox', 'startBox');
+$tpl->registerModifier('stopBox', 'stopBox');
+$tpl->registerModifier('popup', 'popup');
 $tpl->assign('isLoggedIn', Session::isLoggedIn());
 
 if (Session::isLoggedIn()) {
