@@ -30,8 +30,6 @@ use libAllure\Shortcuts as LA;
 
 $san = libAllure\Sanitizer::getInstance();
 $map = $san->filterString('quadrant', 'Alpha');
-$selectedRow = $san->filterUint('row');
-$selectedCol = $san->filterUint('col');
 
 function getMaps()
 {
@@ -54,44 +52,10 @@ function updatePlayerLocation() {
     }
 }
 
-function getAllCellsInQuad($map) {
-    $sql = "SELECT m.tileset, m.traversable, m.entity, m.row, m.col FROM map_cells m LEFT JOIN entities e ON m.entity = e.id WHERE m.map = :quad";
-    $stmt = DatabaseFactory::getInstance()->prepare($sql);
-    $stmt->execute([
-        ':quad' => $map,
-    ]);
+$map = new pfrog\Map($san->filterString('map'));
+$map->setSelectedCell($san->filterUint('row'), $san->filterUint('col'));
+$map->getAllCells();
 
-    return $stmt->fetchAll();
-}
-
-function getCell($row, $col)
-{
-    global $cells, $selectedRow, $selectedCol;
-
-    // FIXME this is horrendously inefficient.
-    foreach ($cells as $cell) {
-        if ($cell['row'] == $row && $cell['col'] == $col) {
-            $cell['selected'] = ($row == $selectedRow && $col == $selectedCol);
-
-            return $cell;
-        }
-    }
-
-    return array(
-        'row' => $row,
-        'col' => $col,
-        'traversable' => true,
-        'tileset' => 'tree.jpg',
-        'entity' => null,
-        'selected' => ($row == $selectedRow && $col == $selectedCol),
-    );
-
-    throw new Exception('Cell not found: ' . $row . ':' . $col . ' in ' . print_r($cells, true));
-}
-
-$cells = getAllCellsInQuad($map);
-
-$tpl->assign('selectedCell', getCell($selectedRow, $selectedCol));
 $tpl->assign('map', $map);
 $tpl->assign('listMaps', getMaps());
 $tpl->display('map.tpl');

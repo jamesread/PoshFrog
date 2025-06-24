@@ -23,21 +23,20 @@
 require_once "includes/common.php";
 
 $title = "Create Quadrent";
-require_once 'includes/widgets/mini_header.php';
+require_once 'includes/widgets/header.minimal.php';
 
 if (isset($_REQUEST['submit'])) {
-    $sql = 'INSERT INTO `quadrents` (`name`, `owner`) VALUES ("' . $_REQUEST['name'] . '", 0)';
+    $sql = 'INSERT INTO `maps` (`name`, `owner`) VALUES ("' . $_REQUEST['name'] . '", 0)';
     $result = $db->query($sql);
 
-    echo 'done', '<a href = "javascript:window.close()">Close</a>';
-    exit;
+    require_once 'includes/widgets/footer.php';
 } else {
     echo "<form>";
     echo '<input name = "name">';
     echo '<input name = "submit" value = "add" type = "submit">';
     echo "</form>";
 
-    $sql = "SELECT * FROM `quadrents` ORDER BY `id`";
+    $sql = "SELECT * FROM `maps` ORDER BY `id`";
     $result = $db->query($sql);
 
     echo "<ol>";

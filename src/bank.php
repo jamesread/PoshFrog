@@ -31,7 +31,7 @@ use libAllure\Session;
 
 switch ($_GET['submit']) {
     case 'loan':
-        adjustUserGold(100);
+        adjustUserGold(1000);
 
         redirect('bank.php', 'Loan application approved!');
         break;
@@ -98,7 +98,7 @@ stopBox(BOX_YELLOW);
 </table>
 <?php
 
-if ($user->getData('gold') <= 0) {
+if ($user->getData('gold') <= 1000) {
     startBox('Uh oh...', BOX_RED);
     echo 'You are a bankrupt tycoon. The bank offers you an <a href = "bank.php?submit=loan">emergency loan</a>. ';
     stopBox(BOX_RED);

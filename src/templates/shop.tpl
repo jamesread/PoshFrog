@@ -22,8 +22,8 @@
 			<tbody>
 		{foreach from = $items item = $item}
 			<tr>
-				<td>{popup("{$item.name}", "shop_entity.php?id={$item.id}")}</td>
-				<td>{$item.gold|formatGold}</td>
+				<td>{popup("{$item.name}", "shop_view_item.php?id={$item.id}&amp;type={$entityType}")}</td>
+				<td>{$item.cost_gold|formatGold}</td>
 			</tr>
 		{/foreach}
 			</tbody>

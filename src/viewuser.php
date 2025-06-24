@@ -25,6 +25,7 @@ require_once "includes/common.php";
 use libAllure\Session;
 use libAllure\Sanitizer;
 use libAllure\DatabaseFactory;
+use pfrog\Inventory;
 
 $san = Sanitizer::getInstance();
 
@@ -73,19 +74,6 @@ $row = getUser(Sanitizer::getInstance()->filterUint('user'));
 
     startBox($row['username'], BOX_GREEN);
     echo "<strong>Gold:</strong> " . $row['gold'] . "<br />";
-    echo "<strong>Entities owned</strong>";
-
-    $entities = getOwnedEntities();
-
-    if (empty($entities)) {
-        echo "<li>No slaves owned.</li>";
-    } else {
-        echo "<ul>";
-        foreach($entities as $entity) {
-            popup("<li>" . $entity['name'] . "</li>", "view_worker.php?slave= " . $entity['name']);
-        }
-        echo "</ul>";
-    }
 
     popup("<strong>Player Ranking</strong>: ?", "help.php?topic=rankings");
 

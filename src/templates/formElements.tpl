@@ -3,7 +3,7 @@
 	{if is_array($element)}
 		{include file = "formElements.tpl" elements=$element}
 	{else}
-		{if $element->getType() eq 'hidden'}
+		{if $element->getType() eq 'ElementHidden'}
 			<input type = "hidden" name = "{$element->getName()}" value = "{$element->getValue()}" />
 		{elseif $element->getType() eq 'html'}
 			{$element->getValue()}
@@ -14,13 +14,15 @@
 
 			{$element->render()}
 
-			{if $element->description ne ''}
-			<p class = "description"><img src = "resources/images/icons/help.png" class = "imageIcon" alt = "Form element help" />{$element->description}</p>
-			{/if}
+			<div>
+				{if $element->description ne ''}
+				<p class = "description"><img src = "resources/images/icons/help.png" class = "imageIcon" alt = "Form element help" />{$element->description}</p>
+				{/if}
 
-			{if $element->getValidationError() ne ''}
-			<p class = "formValidationError">{$element->getValidationError()}</p>
-			{/if}
+				{if $element->getValidationError() ne ''}
+				<p class = "formValidationError">{$element->getValidationError()}</p>
+				{/if}
+			</div>
 		{/if}
 	{/if}
 {/foreach}

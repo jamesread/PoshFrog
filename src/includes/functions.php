@@ -32,7 +32,7 @@ use libAllure\Shortcuts as LA;
 
 function getProgramName()
 {
-    return 'pfrog';
+    return 'PoshFrog';
 }
 
 function gud($key)
@@ -57,21 +57,13 @@ function getTurns()
     $now = time();
     $timelapse = ($now - $registerd);
 
-    $blocks = $timelapse / $waitTimePerTurn;
-    $temp = explode('.', $blocks);
-
-    if (strlen($temp[1]) == 1) {
-        $temp[1] = $temp[1] . 0;
-    }
-
-    $time_left = $waitTimePerTurn - $temp[1];
-
-    $temp[0] = ($temp[0] - $turns['used']);
+    $time_left = floor($timelapse / $waitTimePerTurn);
+    $blocks = 0;
 
     $turns['time'] = $time_left;
     $turns['total'] = $blocks;
     $turns['total_turns'] = $blocks;
-    $turns['remaining'] = $temp[0];
+    $turns['remaining'] = $blocks;
 
     return $turns;
 }
@@ -196,29 +188,9 @@ function getApplicationVersion(): string
     }
 }
 
-function getAllowedValueOrDefault(&$v, $default, array $itemTypes) 
-{
-    if (!isset($v) || (!in_array($v, $itemTypes))) {
-        return $default;
-    }
-
-    return $v;
-}
-
 function formatGold($count)
 {
     return '<img src = "resources/images/gold.png" /> ' . $count;
-}
-
-function getOwnedEntities() 
-{
-    $sql = 'SELECT e.* FROM entities e WHERE e.owner = :owner';
-    $stmt = LA::stmt($sql);
-    $stmt->execute([
-        'owner' => Session::getUser()->getId()
-    ]);
-
-    return $stmt->fetchAll();
 }
 
 function getPlayerLocation()

@@ -39,7 +39,7 @@ class Game
 
     public function getItemTypes() 
     {
-        return ['businessess', 'workers', 'machines', 'buildings'];
+        return ['business', 'worker', 'accessory'];
     }
 
     public function stepTurns() 
@@ -51,9 +51,12 @@ class Game
         $lastTurn = $lastTurn->getTimestamp();
         $now = time();
 
+<<<<<<< HEAD
         $diff = $now - $lastTurn;
 
         var_dump($lastTurn, $now, $diff);
+=======
         var_dump($lastTurn, $now, $now - $lastTurn);
+>>>>>>> 1c0114ec2d21a36d58abc6538161878529743eb2
     }
 }

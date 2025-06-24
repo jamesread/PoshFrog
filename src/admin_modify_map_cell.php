@@ -22,7 +22,7 @@
 
 require_once 'includes/common.php';
 $title = "Modify Tileset";
-require_once 'includes/widgets/mini_header.php';
+require_once 'includes/widgets/header.minimal.php';
 
 use \libAllure\DatabaseFactory;
 

@@ -28,6 +28,7 @@ $cfg->tryLoad([
 ]);
 
 \libAllure\ErrorHandler::getInstance()->beGreedy();
+\libAllure\Sanitizer::getInstance()->enableSearchingPrefixKeys();
 
 $db = new \libAllure\Database($cfg->getDsn(), $cfg->get('DB_USER'), $cfg->get('DB_PASS'));
 \libAllure\DatabaseFactory::registerInstance($db);

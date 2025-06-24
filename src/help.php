@@ -23,7 +23,7 @@
 require_once 'includes/common.php';
 
 $title = 'help: ' . $_REQUEST['topic'];
-require_once 'includes/widgets/mini_header.php';
+require_once 'includes/widgets/header.minimal.php';
 
 switch ($_REQUEST['topic']) {
     case 'rankings':

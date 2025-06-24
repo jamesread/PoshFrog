@@ -6,6 +6,10 @@ body {
   margin: 0;
 }
 
+body.minimal {
+  margin-top: 2em;
+}
+
 header {
   background-color: #333;
   padding: .5em;
@@ -15,9 +19,15 @@ header {
   grid-template-columns: auto auto;
   grid-template-rows: auto auto;
   grid-template-areas: 
-    "title session"
-    "finance contacts"
+    "header-tl header-tr"
+    "header-bl header-br"
     ;
+}
+
+dialog form {
+  background-color: black;
+  text-align: right;
+  display: block;
 }
 
 h1 {
@@ -28,6 +38,10 @@ h1 {
 
 h3 {
   margin: 0;
+}
+
+.formValidationError {
+  color: red;
 }
 
 .box {
@@ -65,13 +79,47 @@ header ul {
   margin: 0; 
 }
 
-header ul li {
-    display: inline-block;
-    padding: 0.25em; 
+.header-bl {
+	grid-area: header-bl;
+}
+
+.header-bl li {
+  display: inline-block;
+  margin-right: .5em;
+}
+
+.header-br {
+	grid-area: header-br;
+  justify-self: right;
+}
+
+.header-br li {
+  display: inline-block;
+  margin-left: .5em;
+}
+
+.header-tl {
+	grid-area: header-tl;
+}
+
+.header-tr {
+	grid-area: header-tr;
+  justify-self: right;
 }
 
 p.status {
-  float: right; }
+  float: right; 
+}
+
+p.status img {
+  vertical-align: middle;
+  padding-right: .25em;
+}
+
+p.status span {
+  margin-left: 2em;
+  display: inline-block;
+}
 
 body {
   max-width: 700px;
@@ -155,10 +203,27 @@ button {
   font-weight: bold;
 }
 
+button:hover {
+  background-color: maroon;
+  cursor: pointer;
+}
+
 form {
   display: grid;
   gap: 1em;
-  grid-template-columns: min-content min-content;
+  grid-template-columns: min-content min-content auto;
+}
+
+dialog {
+  width: 800px;
+  height: 600px;
+  padding: 0;
+  border: 2px solid black;
+}
+
+iframe {
+  width: 100%;
+  height: 100%;
 }
 
 footer {

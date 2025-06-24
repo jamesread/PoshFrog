@@ -25,28 +25,22 @@ $title = "shop";
 require_once "includes/widgets/header.php";
 
 use pfrog\ContentGenerator;
+use pfrog\Inventory;
 use libAllure\DatabaseFactory;
 
 $generator = new ContentGenerator();
 $generator->generate();
 
-$entityTypes = ['business', 'worker', 'accessory'];
-$entityType = getAllowedValueOrDefault($_GET['mode'], 'worker', $entityTypes);
+$san = libAllure\Sanitizer::getInstance();
 
-function getEntitiesForSale($type) 
-{
-    $sql = 'SELECT * FROM `entities` WHERE `owner` is null AND `type` = :type';
-    $stmt = DatabaseFactory::getInstance()->prepare($sql);
-    $stmt->execute([
-        'type' => $type,
-    ]);
+$entityTypes = $game->getItemTypes();
+$entityType = $san->filterInputEnum('mode', $entityTypes, 'workers');
 
-    return $stmt->fetchAll();
-}
+$inv = new Inventory();
 
 $tpl->assign('entityTypes', $entityTypes);
 $tpl->assign('entityType', $entityType);
-$tpl->assign('items', getEntitiesForSale($entityType));
+$tpl->assign('items', $inv->getUnowned($entityType));
 $tpl->display('shop.tpl');
 
 

@@ -42,7 +42,7 @@ if (Session::isLoggedIn()) {
     $turns = getTurns();
     $gold = number_format(gud('gold'));
 
-    $game->stepTurns();
+    //$game->stepTurns();
 
     $tpl->assign('gold', $gold);
     $tpl->assign('turns', $turns);

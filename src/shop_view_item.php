@@ -24,9 +24,8 @@ require_once 'includes/widgets/header.minimal.php';
 
 use libAllure\Session;
 use libAllure\Form;
-
-use function libAllure\util\stmt;
-use function libAllure\util\san;
+use libAllure\Shortcuts as LA;
+use pfrog\Inventory;
 
 class FormBuy extends Form {
     private $id;
@@ -36,34 +35,33 @@ class FormBuy extends Form {
     public function __construct() {
         parent::__construct('formBuy', 'Buy');
 
-        $this->id = san()->filterUint('id');
+        $this->id = LA::san()->filterUint('id');
+        $this->type = LA::san()->filterString('type');
 
         $this->addElementReadOnly('ID', $this->id, 'id');
+        $this->addElementReadOnly('Worker', $this->type, 'type');
         $this->addDefaultButtons('Buy');
     }
 
     public function getShopItem() {
-        if (isset($_REQUEST['id'])) {
-            $id = $_REQUEST['id'];
-        } else {
-            $id = $this->getElementValue('id');
-        }
+        $san = \libAllure\Sanitizer::getInstance();
+        $id = $san->filterId();
+        $type = $this->getElementValue('type');
 
-        $stmt = stmt('SELECT * FROM entities WHERE id = :id LIMIT 1');
-        $stmt->execute([
-            'id' => $id,
-        ]);
+        $inv = new Inventory(); 
 
-        return $stmt->fetchRow();
+        return $inv->get($type, $id);
     }
 
     public function validateExtended() {
+        return;
+
         $this->item = $this->getShopItem();
         $this->gold = getGold();
         //$this->turns = getTurns();
 
         if ($this->gold < $this->item['gold']) {
-            $this->setValidatationError("You dont have enough gold. You need <strong>" . ($item['gold'] - $gold) . "</strong> more.");
+            $this->setElementError('submit', "You dont have enough gold. You need <strong>" . ($this->item['gold'] - $this->gold) . "</strong> more.");
             return;
         }
 
@@ -73,14 +71,8 @@ class FormBuy extends Form {
     }
 
     public function process() {
-        $sql = 'UPDATE entities SET owner = :me WHERE id = :id';;
-        $stmt = stmt($sql);
-        $stmt->execute([
-            'me' => Session::getUser()->getId(),
-            'id' => $this->item['id'],
-        ]);
-
-        adjustUserGold($this->item['gold']);
+        $inv = new Inventory();
+        $inv->buy($this->getElementValue('type'), $this->getElementValue('id'));
 
         echo 'Purchased!';
     }
@@ -96,7 +88,7 @@ if ($f->validate()) {
     echo '<div class = "box">';
     echo '<h2 class = "green-box">' . $item['name'] . "</h2>";
     echo "<br /><br /><strong>Gold:</strong> ";
-    echo $item['gold'];
+    echo $item['cost_gold'];
     echo "<br /><br /><strong>Turns:</strong> ";
     echo $item['turns'];
     echo '</div><br/><br/>';

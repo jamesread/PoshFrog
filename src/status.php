@@ -4,18 +4,15 @@ require_once 'includes/widgets/header.php';
 
 use libAllure\Session;
 
-$entities = getOwnedEntities();
+$inv = new pfrog\Inventory(); 
+
 $entitiesByType = [];
 
-foreach (getOwnedEntities() as $entity) {
-    if (!isset($entitiesByType[$entity['type']])) {
-        $entitiesByType[$entity['type']] = [
-            'name' => $entity['type'],
-            'items' => [],   
-        ];
-    }
-
-    $entitiesByType[$entity['type']]['items'][] = $entity;
+foreach ($game->getItemTypes() as $type) {
+    $entitiesByType[] = [
+        'name' => $type,
+        'items' => $inv->getOwned($type),
+    ];
 }
 
 $tpl->assign('entities', $entitiesByType);

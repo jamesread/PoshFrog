@@ -13,16 +13,23 @@
 <body>
 
 <header>
-	<h1 style = "grid-area: title">
+	<h1 class = "header-tl">
 		<a href = "index.php">pFrog</a>
 	</h1>
 
 {if $isLoggedIn}
-    <div style = "grid-area: session; justify-self: right;">
+    <div class = "header-tr">
 		logged in as <strong><a href = "viewuser.php?user={$user->getID()}" \>{$user->getUsername()}</a></strong>.
 	</div>
+
+	<ul class = "header-bl">
+			<li><a href="status.php">status</a></li>
+			<li><a href="activitys.php">activities</a></li>
+			<li><a href="map.php">map</a></li>
+	</ul>
+
     
-	<ul style = "grid-area: 'shop'; justify-self: right; text-align: right;">
+	<ul class = "header-br">
 			{if $isAdmin}
 			<li>
 			</li>
@@ -30,12 +37,6 @@
 			<li><a href="shop.php">shop</a></li>
 			<li><a href="leaderboard.php">leaderboard</a></li>
              <li><a href="contacts.php">contacts</a></li>
-	</ul>
-
-	<ul style = "grid-area: finance">
-			<li><a href="status.php">status</a></li>
-			<li><a href="activitys.php">activities</a></li>
-			<li><a href="map.php">map</a></li>
 	</ul>
 </header>
 

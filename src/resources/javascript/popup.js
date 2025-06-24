@@ -20,8 +20,29 @@
 
 function popitup(url)
 {
+  let dlg = document.createElement('dialog');
+  let f = document.createElement('form');
+  f.setAttribute('method', 'dialog');
+  
+  let b = document.createElement('button');
+  b.innerText = 'Close';
+
+  f.appendChild(b);
+
+  dlg.appendChild(f);
+
+  let iframe = document.createElement('iframe');
+  iframe.src = url;
+
+  dlg.appendChild(iframe);
+  document.body.appendChild(dlg);
+  
+  dlg.showModal();
+
+/*
     newwindow = window.open(url,'name','height=280,width=400,left=100,top=100');
     if (window.focus) {
         newwindow.focus()}
     return false;
+*/
 }
